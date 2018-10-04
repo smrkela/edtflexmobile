@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+		  xmlns:s="library://ns.adobe.com/flex/spark"
+		  width="100%"
+		  currentState="{presenter.model.todayResults.length &gt; 0 ? 'list' : 'default'}"
+		  xmlns:controls="com.edt.mobile.views.dailytest.overview.controls.*"
+		  xmlns:components="com.edt.mobile.components.*">
+
+	<s:states>
+		<s:State name="default"/>
+		<s:State name="list"/>
+	</s:states>
+
+	<s:Label includeIn="default"
+			 text="Današnji test dana još uvek niko nije uradio, budi prvi koji će uraditi današnji test!"
+			 width="100%"
+			 color="{ThemeColors.GRAY}"/>
+
+	<s:Label includeIn="list"
+			 text="Rezultati današnjeg testa - {presenter.model.todayResults.length} takmičara"
+			 width="100%"/>
+
+	<components:XLine width="100%"
+					  includeIn="list"/>
+
+	<s:DataGroup includeIn="list"
+				 width="100%"
+				 dataProvider="{presenter.model.todayResults}">
+
+		<s:layout>
+			<s:VerticalLayout/>
+		</s:layout>
+
+		<s:itemRenderer>
+			<fx:Component>
+				<controls:DailyTestOverviewTodayResultRenderer/>
+			</fx:Component>
+		</s:itemRenderer>
+
+	</s:DataGroup>
+
+
+	<fx:Script>
+		<![CDATA[
+			import com.edt.mobile.views.home.HomePresenter;
+			import com.evola.driving.util.ThemeColors;
+
+			[Bindable]
+			public var presenter:HomePresenter;
+		]]>
+	</fx:Script>
+
+</s:VGroup>

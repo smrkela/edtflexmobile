@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SkinnablePopUpContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+						   xmlns:s="library://ns.adobe.com/flex/spark"
+						   backgroundColor="{ThemeColors.GRAY}"
+						   backgroundAlpha="0.95"
+						   color="#FFFFFF"
+						   symbolColor="#FFFFFF"
+						   width="80%"
+						   xmlns:components="com.edt.mobile.components.*"
+						   updateComplete="onUpdateComplete(event)">
+	<s:layout>
+		<s:HorizontalLayout gap="5"
+							paddingBottom="30"
+							paddingLeft="30"
+							paddingRight="30"
+							paddingTop="30"
+							horizontalAlign="center"
+							verticalAlign="middle"/>
+	</s:layout>
+
+	<s:BusyIndicator/>
+
+	<s:Label text="{message}"
+			 width="100%"
+			 textAlign="center"/>
+
+	<fx:Script>
+		<![CDATA[
+			import com.evola.driving.util.ThemeColors;
+			
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+			import mx.managers.PopUpManager;
+
+			private static var _instance:XLoadingPopup;
+
+			private var _message:String;
+
+			public static function show(message:String, modal:Boolean=true):void
+			{
+
+				if (!_instance)
+				{
+
+					_instance=new XLoadingPopup();
+				}
+
+				_instance.message=message;
+				_instance.open(FlexGlobals.topLevelApplication as DisplayObjectContainer, modal);
+			}
+
+			public static function hide():void
+			{
+
+				if (_instance)
+					_instance.close();
+			}
+
+			[Bindable]
+			public function get message():String
+			{
+				return _message;
+			}
+
+			public function set message(value:String):void
+			{
+				_message=value;
+			}
+
+			protected function onUpdateComplete(event:FlexEvent):void
+			{
+
+				width=owner.width * 0.8;
+			}
+
+			override public function updatePopUpPosition():void
+			{
+
+				PopUpManager.centerPopUp(this);
+			}
+		]]>
+	</fx:Script>
+
+</s:SkinnablePopUpContainer>

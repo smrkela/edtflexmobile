@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:HGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+		  xmlns:s="library://ns.adobe.com/flex/spark"
+		  visible="{Session.model.isTestingMode}"
+		  includeInLayout="{Session.model.isTestingMode}">
+
+	<s:CheckBox id="chb"
+				useHandCursor="true"
+				selected="{answer.isUserSelected}"
+				click="onCheckBoxClick(event)"
+				visible="{question.isMultiSelect}"
+				includeInLayout="{question.isMultiSelect}"/>
+
+	<s:RadioButton id="rb"
+				   useHandCursor="true"
+				   selected="{answer.isUserSelected}"
+				   visible="{!question.isMultiSelect}"
+				   includeInLayout="{!question.isMultiSelect}"
+				   value="{answer}"
+				   group="{group}"/>
+
+	<fx:Script>
+		<![CDATA[
+			import com.evola.driving.Session;
+			import com.evola.driving.model.Question;
+			import com.evola.driving.model.QuestionAnswer;
+
+			import spark.components.RadioButtonGroup;
+
+
+			[Bindable]
+			public var question:Question;
+
+			[Bindable]
+			public var answer:QuestionAnswer;
+
+			[Bindable]
+			public var group:RadioButtonGroup;
+
+			protected function onCheckBoxClick(event:MouseEvent):void
+			{
+
+				answer.isUserSelected=event.target.selected
+			}
+
+			public function clickCheckbox():void
+			{
+
+				if (enabled)
+				{
+
+					if (question.isMultiSelect)
+					{
+						answer.isUserSelected=!answer.isUserSelected;
+					}
+					else
+					{
+						question.setUserAnswer(answer);
+					}
+
+				}
+			}
+		]]>
+	</fx:Script>
+
+</s:HGroup>

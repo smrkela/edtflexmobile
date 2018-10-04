@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<components:XView xmlns:fx="http://ns.adobe.com/mxml/2009"
+				  xmlns:s="library://ns.adobe.com/flex/spark"
+				  title="Test dana"
+				  init="presenter.viewShown()"
+				  destructionPolicy="never"
+				  xmlns:lessons="com.edt.mobile.views.lessons.*"
+				  xmlns:components="com.edt.mobile.components.*"
+				  pageUrl="dailyTestOverview"
+				  xmlns:overview="com.edt.mobile.views.dailytest.overview.*"
+				  xmlns:components1="com.edt.mobile.views.dailytest.overview.components.*">
+
+	<s:BusyIndicator visible="{presenter.model.isLoading}"
+					 includeInLayout="{presenter.model.isLoading}"
+					 horizontalCenter="0"/>
+
+	<s:Scroller width="100%"
+				height="100%"
+				visible="{!presenter.model.isLoading}"
+				includeInLayout="{!presenter.model.isLoading}">
+
+		<s:VGroup width="100%"
+				  paddingTop="5"
+				  paddingBottom="5"
+				  paddingLeft="5"
+				  paddingRight="5">
+
+			<components:XButton label="Uradi današnji test"
+								width="100%"
+								click="presenter.doTodayTest()"
+								primaryColor="{ThemeColors.GREEN}"
+								icon="@Embed(source='assets/images/icons/play_white.png')"
+								visible="{!presenter.model.isTodayTestDone}"
+								includeInLayout="{!presenter.model.isTodayTestDone}"/>
+
+			<components1:DailyTestOverviewTestsDoneComponent presenter="{presenter}"
+															 includeInLayout="{presenter.model.totalTestsDone != 0}"
+															 visible="{presenter.model.totalTestsDone != 0}"/>
+
+			<components1:DailyTestOverviewNoTestsDoneComponent presenter="{presenter}"
+															   includeInLayout="{presenter.model.totalTestsDone == 0}"
+															   visible="{presenter.model.totalTestsDone == 0}"/>
+
+
+			<s:Spacer height="10"/>
+
+			<s:HGroup width="100%">
+
+				<components:XButton label="Svi testovi"
+									icon="@Embed(source='assets/images/icons/list.png')"
+									width="100%"
+									click="presenter.allTestsClicked()"/>
+
+				<components:XButton label="Top lista"
+									icon="@Embed(source='assets/images/icons/top_list.png')"
+									width="100%"
+									click="presenter.topListClicked()"/>
+
+			</s:HGroup>
+
+			<s:Spacer height="10"/>
+
+			<components1:DailyTestOverviewTodayResultsComponent presenter="{presenter}"/>
+
+		</s:VGroup>
+
+	</s:Scroller>
+
+	<fx:Declarations>
+
+		<overview:DailyTestOverviewPresenter id="presenter"
+											 view="{this}"/>
+
+	</fx:Declarations>
+
+
+	<fx:Script>
+		<![CDATA[
+			import com.evola.driving.util.ThemeColors;
+		]]>
+	</fx:Script>
+
+</components:XView>

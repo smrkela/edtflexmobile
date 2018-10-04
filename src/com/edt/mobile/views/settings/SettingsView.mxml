@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<components:XView xmlns:fx="http://ns.adobe.com/mxml/2009"
+				  xmlns:s="library://ns.adobe.com/flex/spark"
+				  xmlns:login="com.edt.mobile.views.login.*"
+				  xmlns:components="com.edt.mobile.components.*"
+				  title="Podešavanja"
+				  init="presenter.viewShown()"
+				  xmlns:settings="com.edt.mobile.views.settings.*"
+				  pageUrl="settings"
+				  xmlns:dropDownList="com.flextras.mobile.dropDownList.*">
+
+	<components:layout>
+		<s:VerticalLayout horizontalAlign="center"/>
+	</components:layout>
+
+	<s:BusyIndicator visible="{presenter.model.isLoading}"
+					 includeInLayout="{presenter.model.isLoading}"/>
+
+	<s:Scroller width="100%"
+				height="100%"
+				visible="{!presenter.model.isLoading}">
+
+		<s:VGroup width="100%"
+				  gap="10"
+				  paddingBottom="5"
+				  paddingTop="5"
+				  paddingLeft="5"
+				  paddingRight="5">
+
+			<components:XFormBox>
+
+				<s:Label text="Ime"
+						 styleName="infoLabel"/>
+				<s:TextInput id="tiFirstName"
+							 width="100%"/>
+
+			</components:XFormBox>
+
+			<components:XFormBox>
+
+				<s:Label text="Prezime"
+						 styleName="infoLabel"/>
+				<s:TextInput id="tiLastName"
+							 width="100%"/>
+
+			</components:XFormBox>
+
+			<components:XFormBox>
+
+				<s:Label text="E-mail"
+						 styleName="infoLabel"/>
+				<s:Label id="tiEmail"
+						 width="100%"/>
+
+			</components:XFormBox>
+
+			<components:XFormBox>
+
+				<s:Label text="Pol"
+						 styleName="infoLabel"/>
+
+				<s:HGroup width="100%">
+
+					<s:RadioButton value="true"
+								   group="{rbgSex}"
+								   label="Muški"/>
+					<s:RadioButton value="false"
+								   group="{rbgSex}"
+								   label="Ženski"/>
+
+				</s:HGroup>
+
+			</components:XFormBox>
+
+			<components:XFormBox>
+
+				<s:Label text="Kategorija vozila"
+						 styleName="infoLabel"/>
+				<dropDownList:DropDownList id="cmbDrivignCategory"
+										   width="100%"
+										   labelField="name"/>
+
+			</components:XFormBox>
+
+			<components:XFormBox>
+
+				<s:Label text="Zvukovi aplikacije"
+						 styleName="infoLabel"/>
+
+				<s:HGroup width="100%">
+
+					<s:RadioButton value="true"
+								   group="{rbgSounds}"
+								   label="Uključeni"/>
+					<s:RadioButton value="false"
+								   group="{rbgSounds}"
+								   label="Isključeni"/>
+
+				</s:HGroup>
+
+			</components:XFormBox>
+
+			<components:XFormBox>
+
+				<s:Label text="Koji put učiš i proveravaš?"
+						 styleName="infoLabel"/>
+
+				<s:HGroup width="100%">
+
+					<s:RadioButton value="1"
+								   group="{rbgOrderNumber}"
+								   label="Prvi"/>
+
+					<s:RadioButton value="2"
+								   group="{rbgOrderNumber}"
+								   label="Drugi"/>
+
+					<s:RadioButton value="3"
+								   group="{rbgOrderNumber}"
+								   label="Treći"/>
+
+				</s:HGroup>
+
+			</components:XFormBox>
+
+			<components:XButton label="Sačuvaj izmene"
+								width="100%"
+								primaryColor="{ThemeColors.GREEN}"
+								click="presenter.updateClicked()"/>
+
+		</s:VGroup>
+
+
+	</s:Scroller>
+
+
+	<fx:Declarations>
+
+		<settings:SettingsPresenter id="presenter"
+									view="{this}"/>
+
+		<s:RadioButtonGroup id="rbgSex"/>
+		<s:RadioButtonGroup id="rbgSounds"/>
+		<s:RadioButtonGroup id="rbgOrderNumber"
+							change="presenter.model.learningOrderNumber = rbgOrderNumber.selectedValue as int; presenter.showLearningNumberNotiication(rbgOrderNumber.selectedValue as int)"
+							selectedValue="{presenter.model.learningOrderNumber}"/>
+
+	</fx:Declarations>
+
+	<fx:Script>
+		<![CDATA[
+			
+			import com.evola.driving.util.ThemeColors;
+			
+		]]>
+	</fx:Script>
+
+</components:XView>

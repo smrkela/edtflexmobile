@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+		  xmlns:s="library://ns.adobe.com/flex/spark"
+		  width="100%"
+		  gap="2"
+		  horizontalAlign="center"
+		  implements="mx.managers.IFocusManagerComponent"
+		  xmlns:controls="com.evola.driving.controls.*"
+		  xmlns:components="com.edt.mobile.views.learning.components.*"
+		  xmlns:components1="com.edt.mobile.components.*">
+
+	<s:BorderContainer width="100%"
+					   borderVisible="false"
+					   backgroundColor="{ThemeColors.ORANGE}">
+
+		<s:layout>
+			<s:HorizontalLayout paddingLeft="2"
+								paddingRight="2"
+								paddingBottom="4"
+								paddingTop="4"/>
+		</s:layout>
+
+		<s:Label text="{question.id}."
+				 color="#FFFFFF"/>
+
+		<s:Label text="{question.text}"
+				 color="#FFFFFF"
+				 width="100%"
+				 minWidth="200"/>
+
+	</s:BorderContainer>
+
+	<s:BorderContainer width="100%"
+					   borderVisible="false"
+					   backgroundColor="{ThemeColors.YELLOW}"
+					   visible="{question.numOfCorrectAnswers > 1}"
+					   includeInLayout="{question.numOfCorrectAnswers > 1}">
+
+		<s:layout>
+			<s:HorizontalLayout paddingLeft="2"
+								paddingRight="2"
+								verticalAlign="middle"/>
+		</s:layout>
+
+		<s:Label text="{getRemarkText(question)}"
+				 color="#FFFFFF"
+				 fontStyle="italic"/>
+
+	</s:BorderContainer>
+
+	<s:Scroller id="imageScroller"
+				width="100%"
+				visible="{question.images.length != 0}"
+				includeInLayout="{question.images.length != 0}">
+
+		<s:DataGroup dataProvider="{question.images}">
+
+			<s:layout>
+				<s:HorizontalLayout paddingBottom="2"
+									paddingTop="2"
+									horizontalAlign="center"/>
+			</s:layout>
+
+			<s:itemRenderer>
+				<fx:Component>
+					<s:ItemRenderer>
+
+						<fx:Script>
+							<![CDATA[
+								import com.evola.driving.util.ThemeColors;
+							]]>
+						</fx:Script>
+
+						<s:layout>
+							<s:VerticalLayout horizontalAlign="center"
+											  gap="2"/>
+						</s:layout>
+
+						<components1:XImage source="{outerDocument.getImagePath(data.url)}"
+											height="200"
+											scaleMode="letterbox"
+											smooth="true"
+											horizontalAlign="center"/>
+
+						<s:Group visible="{data.text}"
+								 includeInLayout="{data.text}">
+
+							<s:Rect width="100%"
+									height="100%"
+									radiusX="2"
+									radiusY="2">
+								<s:fill>
+									<s:SolidColor color="{ThemeColors.ORANGE}"/>
+								</s:fill>
+							</s:Rect>
+
+							<s:Label width="100%"
+									 paddingBottom="2"
+									 paddingLeft="8"
+									 paddingRight="8"
+									 paddingTop="2"
+									 fontWeight="bold"
+									 color="#FFFFFF"
+									 text="{data.text}"
+									 horizontalCenter="0"
+									 verticalCenter="0"
+									 textAlign="center"/>
+
+						</s:Group>
+
+					</s:ItemRenderer>
+				</fx:Component>
+			</s:itemRenderer>
+
+		</s:DataGroup>
+
+	</s:Scroller>
+
+	<s:DataGroup dataProvider="{question.answers}"
+				 width="100%">
+
+		<s:layout>
+			<s:VerticalLayout gap="2"/>
+		</s:layout>
+
+		<s:itemRenderer>
+			<fx:Component>
+				<s:ItemRenderer width="100%">
+					<fx:Script>
+						<![CDATA[
+							import com.evola.driving.Session;
+							import com.evola.driving.model.QuestionAnswer;
+						]]>
+					</fx:Script>
+
+					<s:BorderContainer width="100%"
+									   borderVisible="false"
+									   backgroundColor="{outerDocument.getAnswerBackgroundColor(data as QuestionAnswer)}"
+									   mouseChildren="false">
+
+						<s:layout>
+							<s:HorizontalLayout paddingBottom="2"
+												paddingLeft="2"
+												paddingRight="2"
+												paddingTop="2"
+												verticalAlign="middle"/>
+						</s:layout>
+
+						<s:HGroup width="100%"
+								  gap="0"
+								  color="#555555"
+								  verticalAlign="{Session.model.isTestingMode ? 'middle' : 'top'}">
+
+							<s:Label text="{outerDocument.getAnswerText(data as QuestionAnswer, itemIndex)}"
+									 width="20"
+									 fontWeight="bold"/>
+
+							<s:Label text="{data.text}"
+									 leading="0"
+									 width="100%"/>
+
+						</s:HGroup>
+
+					</s:BorderContainer>
+
+				</s:ItemRenderer>
+			</fx:Component>
+		</s:itemRenderer>
+
+	</s:DataGroup>
+
+	<fx:Script>
+		<![CDATA[
+			import com.evola.driving.util.ThemeColors;
+			import com.evola.driving.model.DrivingCategory;
+			import mx.collections.ArrayCollection;
+			import com.evola.driving.Session;
+			import com.edt.mobile.utils.Settings;
+			import com.evola.driving.model.Question;
+			import com.evola.driving.model.QuestionAnswer;
+
+			private var PREFIXES:Array=["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k"];
+
+			[Bindable]
+			public var question:Question;
+
+			public function getAnswerBackgroundColor(answer:QuestionAnswer):uint
+			{
+
+				var showColor:Boolean=true;
+
+				if (!showColor)
+				{
+					return 0xE8E8E8;
+				}
+				else
+				{
+					if (answer.correct)
+						return 0x91D100;
+					else
+						return 0xE8E8E8;
+				}
+			}
+
+			public function getAnswerText(answer:QuestionAnswer, index:int):String
+			{
+
+				var prefix:String=PREFIXES[index];
+
+				return prefix + ")";
+
+			}
+
+			public function getImagePath(imageName:String):String
+			{
+
+				return Settings.SERVER + "/image?path=" + imageName;
+			}
+
+			private static function getRemarkText(question:Question):Object
+			{
+
+				if (Session.model.isTestingMode)
+				{
+
+					if (question.numOfCorrectAnswers > 1)
+						return "izaberi " + question.numOfCorrectAnswers + " odgovora"
+				}
+				else
+				{
+
+					if (question.numOfCorrectAnswers > 1)
+					{
+						if (question.numOfCorrectAnswers == 2)
+							return question.numOfCorrectAnswers + " tačna odgovora";
+						else
+							return question.numOfCorrectAnswers + " tačnih odgovora";
+					}
+				}
+
+				return null;
+			}
+		]]>
+	</fx:Script>
+
+</s:VGroup>

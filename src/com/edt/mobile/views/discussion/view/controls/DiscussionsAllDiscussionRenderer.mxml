@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<controls2:DiscussionsRendererBase xmlns:fx="http://ns.adobe.com/mxml/2009"
+								   xmlns:s="library://ns.adobe.com/flex/spark"
+								   xmlns:controls="com.evola.driving.controls.*"
+								   xmlns:controls1="com.evola.driving.views.pages.discussions.controls.*"
+								   xmlns:components="com.edt.mobile.components.*"
+								   xmlns:controls2="com.edt.mobile.views.discussion.view.controls.*"
+								   click="presenter.messageClicked(message)">
+
+	<s:BorderContainer width="100%"
+					   color="#FFFFFF"
+					   borderVisible="false"
+					   backgroundColor="{ThemeColors.FORUM_HEADER}">
+
+		<s:layout>
+			<s:HorizontalLayout verticalAlign="middle"/>
+		</s:layout>
+
+		<controls2:DiscussionsCategoryControl message="{message}"/>
+
+		<s:Label width="30"
+				 text="{getMessageNumber(presenter.model.allDiscussionMessages.getItemIndex(message), presenter.model.allDiscussionsStartPageIndex)}"/>
+
+		<s:Label text="{DateUtils.formatDateExtended(FormattingUtils.parseJavaDateString(message.attribute('message-date')))}"
+				 width="100%"/>
+
+		<s:Label text="{message.attribute('message-count')} poruka"/>
+
+	</s:BorderContainer>
+
+	<s:HGroup width="100%">
+
+		<s:Label text="{DrivingUtils.cleanText(message.attribute('question-id') + ' ' + message.attribute('question-text'), 200)}"
+				 width="100%"/>
+
+	</s:HGroup>
+
+	<s:BorderContainer width="100%"
+					   height="100%"
+					   borderVisible="false"
+					   backgroundColor="{ThemeColors.FORUM_MESSAGE}">
+
+		<s:layout>
+			<s:VerticalLayout/>
+		</s:layout>
+
+		<s:HGroup width="100%">
+
+			<components:EImage width="45"
+							   height="45"
+							   source="{Settings.SERVER + '/resource?path=/users/'+ message.attribute('message-user-id')+ '/smallImage'}"/>
+
+			<s:VGroup width="100%"
+					  gap="2">
+
+				<s:Label text="{message.attribute('message-user-name')}"
+						 width="100%"
+						 fontWeight="bold"/>
+
+				<s:Label text="{message.attribute('message-user-level')}. nivo"/>
+
+				<s:HGroup width="100%">
+
+					<s:Label text="{DrivingUtils.cleanText(message.attribute('message-text'), 200)}"
+							 width="100%"/>
+
+				</s:HGroup>
+
+			</s:VGroup>
+
+		</s:HGroup>
+
+	</s:BorderContainer>
+
+	<fx:Script>
+		<![CDATA[
+			import com.edt.mobile.utils.Settings;
+			import com.evola.driving.util.DateUtils;
+			import com.evola.driving.util.DrivingUtils;
+			import com.evola.driving.util.FormattingUtils;
+			import com.evola.driving.util.ThemeColors;
+		]]>
+	</fx:Script>
+
+</controls2:DiscussionsRendererBase>

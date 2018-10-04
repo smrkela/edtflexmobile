@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<components:XTouchGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+						xmlns:s="library://ns.adobe.com/flex/spark"
+						color="#FFFFFF"
+						xmlns:components="com.edt.mobile.components.*"
+						currentState="{isRollOver || isSelected ? 'rollOver' : 'default'}">
+
+	<components:states>
+		<s:State name="default"/>
+		<s:State name="rollOver"/>
+	</components:states>
+
+	<components:XButtonBackground primaryAlpha="{primaryAlpha}"
+								  primaryColor="{primaryColor}"
+								  secondaryAlpha="{secondaryAlpha}"
+								  secondaryColor="{secondaryColor}"
+								  isTouched="false"
+								  isTouched.rollOver="true"/>
+
+	<s:HGroup left="0"
+			  right="0"
+			  top="0"
+			  bottom="0"
+			  verticalAlign="middle"
+			  paddingLeft="4"
+			  paddingRight="4"
+			  paddingBottom="{paddingBottom}"
+			  paddingTop="{paddingTop}">
+
+		<s:BitmapImage source="{icon}"
+					   smooth="true"
+					   includeInLayout="{icon != null}"/>
+
+		<s:Label text="{label}"
+				 includeInLayout="{label}"
+				 width="100%"/>
+
+	</s:HGroup>
+
+	<fx:Script>
+		<![CDATA[
+			import com.evola.driving.util.ThemeColors;
+			[Bindable]
+			public var label:String;
+
+			[Bindable]
+			public var icon:Object;
+
+			[Bindable]
+			public var primaryColor:uint=ThemeColors.BLUE;
+
+			[Bindable]
+			public var secondaryColor:uint=ThemeColors.BLUE;
+
+			[Bindable]
+			public var primaryAlpha:Number=1;
+
+			[Bindable]
+			public var secondaryAlpha:Number=0.7;
+
+			[Bindable]
+			public var paddingTop:int=8;
+
+			[Bindable]
+			public var paddingBottom:int=8;
+		]]>
+	</fx:Script>
+
+</components:XTouchGroup>

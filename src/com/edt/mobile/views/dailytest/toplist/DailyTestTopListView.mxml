@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<components:XView xmlns:fx="http://ns.adobe.com/mxml/2009"
+				  xmlns:s="library://ns.adobe.com/flex/spark"
+				  title="Top lista testa dana"
+				  init="presenter.viewShown()"
+				  destructionPolicy="never"
+				  xmlns:lessons="com.edt.mobile.views.lessons.*"
+				  xmlns:components="com.edt.mobile.components.*"
+				  pageUrl="dailyTestsTopList"
+				  xmlns:overview="com.edt.mobile.views.dailytest.overview.*"
+				  xmlns:list="com.edt.mobile.views.dailytest.list.*"
+				  xmlns:toplist="com.edt.mobile.views.dailytest.toplist.*">
+
+	<s:BusyIndicator visible="{presenter.model.isLoading}"
+					 includeInLayout="{presenter.model.isLoading}"
+					 horizontalCenter="0"/>
+
+	<s:List dataProvider="{presenter.model.dataProvider}"
+			styleName="topList"
+			width="100%"
+			height="100%"
+			itemRenderer="com.edt.mobile.views.dailytest.toplist.controls.DailyTestTopListItemRenderer"
+			visible="{!presenter.model.isLoading}"
+			includeInLayout="{!presenter.model.isLoading}"/>
+
+	<fx:Declarations>
+
+		<toplist:DailyTestTopListPresenter id="presenter"
+										   view="{this}"/>
+
+	</fx:Declarations>
+
+
+	<fx:Script>
+		<![CDATA[
+			
+		]]>
+	</fx:Script>
+
+</components:XView>

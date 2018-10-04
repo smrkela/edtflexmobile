@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+		  xmlns:s="library://ns.adobe.com/flex/spark"
+		  width="100%"
+		  xmlns:components="com.edt.mobile.views.dailytest.overview.components.*"
+		  xmlns:components1="com.edt.mobile.components.*">
+
+	<components1:XButton label="Danas osvojeno {presenter.model.todayTestPoints} poena!"
+						 width="100%"
+						 primaryColor="{ThemeColors.ORANGE}"
+						 visible="{presenter.model.isTodayTestDone}"
+						 includeInLayout="{presenter.model.isTodayTestDone}"
+						 click="presenter.todayResultClicked()"/>
+
+	<s:Spacer height="5"/>
+
+	<components1:XProgressControl title="Trenutna pozicija"
+								  icon="@Embed(source='assets/images/icons/progress_position.png')"
+								  inverseProgress="true"
+								  progressColor="{ThemeColors.ORANGE}"
+								  primaryLabel="{presenter.model.currentPosition}"
+								  secondaryLabel="{presenter.model.totalTestUsers}"
+								  progress="{presenter.model.currentPosition / presenter.model.totalTestUsers}"/>
+
+	<s:Spacer height="5"/>
+
+	<components1:XProgressControl title="Urađeno testova"
+								  icon="@Embed(source='assets/images/icons/progress_tests.png')"
+								  progressColor="{ThemeColors.RED}"
+								  primaryLabel="{presenter.model.totalTestsDone}"
+								  secondaryLabel="{presenter.model.totalTests}"
+								  progress="{presenter.model.totalTestsDone / presenter.model.totalTests}"/>
+
+	<fx:Script>
+		<![CDATA[
+			import com.edt.mobile.views.home.HomePresenter;
+			import com.evola.driving.util.ThemeColors;
+
+			[Bindable]
+			public var presenter:HomePresenter;
+		]]>
+	</fx:Script>
+
+</s:VGroup>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				width="100%"
+				xmlns:components="com.edt.mobile.components.*"
+				xmlns:controls="com.edt.mobile.views.dailytest.list.controls.*">
+
+	<s:layout>
+		<s:HorizontalLayout gap="5"
+							paddingBottom="4"
+							paddingTop="4"
+							paddingLeft="2"
+							paddingRight="2"
+							verticalAlign="middle"/>
+	</s:layout>
+
+	<s:VGroup width="100%">
+
+		<s:HGroup width="100%"
+				  fontSize="16">
+
+			<s:Label text="{orderNumber}."
+					 color="#777777"/>
+
+			<s:Label text="{username}"
+					 maxDisplayedLines="1"
+					 width="100%"/>
+
+			<s:Label text="{points} poena"
+					 color="{ThemeColors.ORANGE}"/>
+
+		</s:HGroup>
+
+		<s:HGroup width="100%"
+				  color="#777777">
+
+			<s:Label text="{tests} testova,"/>
+
+			<s:Label text="{correctPercent}% tačnost,"/>
+
+			<s:Label text="{time} sati"/>
+
+		</s:HGroup>
+
+	</s:VGroup>
+
+	<fx:Script>
+		<![CDATA[
+			import com.edt.mobile.utils.Settings;
+			import com.evola.driving.util.ThemeColors;
+
+			[Bindable]
+			private var userImageURL:String;
+
+			[Bindable]
+			private var orderNumber:int;
+
+			[Bindable]
+			private var username:String;
+
+			[Bindable]
+			private var points:Number;
+
+			[Bindable]
+			private var tests:int;
+
+			[Bindable]
+			private var correctPercent:Number;
+
+			[Bindable]
+			private var time:Number;
+
+
+			override public function set data(value:Object):void
+			{
+
+				if (value && value != data)
+				{
+
+					userImageURL=Settings.SERVER + '/resource?path=/users/' + value.attribute('user-id') + '/smallImage';
+					orderNumber=value.attribute('order-number');
+					username=value.@username;
+					points=value.attribute('points');
+					tests=value.attribute('number-of-tests');
+					correctPercent=value.attribute('correct-percent');
+					time=getTimeInHours(value.attribute('time-taken'));
+				}
+
+				super.data=value;
+			}
+
+			private function getTimeInHours(timeInSeconds:Number):Number
+			{
+
+				var hours:Number=timeInSeconds / 3600;
+
+				var roundedHours:Number=Math.round(hours * 10) / 10;
+
+				//ne dozvoljavamo nulu kao vrednost
+				if (roundedHours == 0)
+					roundedHours=0.1;
+
+				return roundedHours;
+			}
+		]]>
+	</fx:Script>
+
+</s:ItemRenderer>

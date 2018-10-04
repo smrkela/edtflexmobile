@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+		  xmlns:s="library://ns.adobe.com/flex/spark"
+		  width="100%"
+		  xmlns:discussions="com.evola.driving.views.pages.discussions.*"
+		  xmlns:controls="com.edt.mobile.views.discussion.view.controls.*"
+		  visible="{presenter.model.myDiscussionMessages.length > 0}">
+
+	<controls:DiscussionsPageControl totalPages="{presenter.model.myDiscussionsTotalPages}"
+									 currentPageIndex="{presenter.model.myDiscussionsStartPageIndex}"
+									 pageClick="presenter.pageChangeClicked(event)"/>
+
+	<s:DataGroup dataProvider="{presenter.model.myDiscussionMessages}"
+				 width="100%">
+
+		<s:layout>
+			<s:VerticalLayout/>
+		</s:layout>
+
+		<s:itemRenderer>
+			<fx:Component>
+				<controls:DiscussionsMyDiscussionRenderer message="{data}"
+														  presenter="{outerDocument.presenter}"/>
+			</fx:Component>
+		</s:itemRenderer>
+
+	</s:DataGroup>
+
+	<controls:DiscussionsPageControl totalPages="{presenter.model.myDiscussionsTotalPages}"
+									 currentPageIndex="{presenter.model.myDiscussionsStartPageIndex}"
+									 pageClick="presenter.pageChangeClicked(event)"/>
+
+	<fx:Script>
+		<![CDATA[
+			import com.edt.mobile.views.discussion.view.DiscussionsPresenter;
+
+			[Bindable]
+			public var presenter:DiscussionsPresenter;
+		]]>
+	</fx:Script>
+
+</s:VGroup>

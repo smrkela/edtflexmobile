@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:LinearGradient xmlns:fx="http://ns.adobe.com/mxml/2009"
+				  xmlns:s="library://ns.adobe.com/flex/spark"
+				  rotation="90">
+
+	<s:GradientEntry color="{isTouched ? secondaryColor : primaryColor}"
+					 alpha="{isTouched ? secondaryAlpha : primaryAlpha}"/>
+	<s:GradientEntry color="{isTouched ? ColorUtil.adjustBrightness(secondaryColor, -20) : ColorUtil.adjustBrightness(primaryColor, -20)}"
+					 alpha="{isTouched ? secondaryAlpha : primaryAlpha}"
+					 ratio="0.5"/>
+
+	<fx:Script>
+		<![CDATA[
+			import com.evola.driving.util.ThemeColors;
+
+			import mx.utils.ColorUtil;
+
+			[Bindable]
+			public var isTouched:Boolean=false;
+
+			[Bindable]
+			public var primaryColor:uint=ThemeColors.BLUE;
+
+			[Bindable]
+			public var secondaryColor:uint=ThemeColors.BLUE;
+
+			[Bindable]
+			public var primaryAlpha:Number=1;
+
+			[Bindable]
+			public var secondaryAlpha:Number=0.8;
+		]]>
+	</fx:Script>
+
+</s:LinearGradient>

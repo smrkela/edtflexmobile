@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:controls="com.evola.driving.controls.*"
+				   xmlns:util="com.evola.driving.util.*"
+				   xmlns:controls1="com.evola.driving.controls.questiondiscuss.controls.*"
+				   xmlns:controls2="com.evola.driving.views.pages.discussions.controls.*"
+				   xmlns:controls3="com.edt.mobile.views.discussion.view.controls.*"
+				   xmlns:components="com.edt.mobile.components.*"
+				   xmlns:controls4="com.edt.mobile.views.discussion.popup.controls.*"
+				   backgroundColor="#FFFFFF"
+				   borderColor="{ThemeColors.BLUE}"
+				   borderStyle="solid"
+				   borderWeight="2"
+				   cornerRadius="3"
+				   creationComplete="onCreationComplete(event)"
+				   dropShadowVisible="true">
+
+	<s:layout>
+		<s:VerticalLayout gap="0"/>
+	</s:layout>
+
+	<s:Group width="100%">
+
+		<components:XRectangle width="100%"
+							   height="100%"
+							   color="{ThemeColors.BLUE}"/>
+
+		<s:Label width="100%"
+				 color="#FFFFFF"
+				 fontWeight="bold"
+				 bottom="3"
+				 left="3"
+				 right="3"
+				 top="3"
+				 text="Diskusija - {presenter.model.totalMessages} poruka"/>
+
+	</s:Group>
+
+	<s:BorderContainer visible="{presenter.model.isWritingMessage}"
+					   width="100%"
+					   height="200"
+					   borderVisible="false"
+					   backgroundColor="{ThemeColors.BLUE}"
+					   includeInLayout="{presenter.model.isWritingMessage}">
+
+		<s:layout>
+			<s:VerticalLayout paddingLeft="10"
+							  paddingRight="10"
+							  paddingTop="10"
+							  paddingBottom="5"/>
+		</s:layout>
+
+		<s:Label color="#FFFFFF"
+				 fontSize="14"
+				 text="Poruka:"/>
+
+		<s:TextArea id="txtMessage"
+					width="100%"
+					height="100%"
+					change="presenter.model.messageText = event.target.text"
+					maxChars="{Settings.FORUM_MESSAGE_LIMIT}"
+					text="{presenter.model.messageText}"/>
+
+		<s:Label color="#FFFFFF"
+				 text="Preostalo {Settings.FORUM_MESSAGE_LIMIT - presenter.model.messageText.length} slova."/>
+
+		<s:HGroup width="100%"
+				  enabled="{!presenter.model.isSavingMessage}">
+
+			<components:XButton label="Sačuvaj poruku"
+								click="presenter.saveMessage()"
+								primaryColor="{ThemeColors.GREEN}"
+								width="100%"/>
+			<components:XButton label="Otkaži"
+								click="presenter.cancelMessage()"
+								primaryColor="{ThemeColors.YELLOW}"
+								width="100%"/>
+
+		</s:HGroup>
+
+	</s:BorderContainer>
+
+	<s:Scroller width="100%"
+				height="100%">
+
+		<s:VGroup width="100%"
+				  height="100%"
+				  paddingBottom="5"
+				  paddingLeft="5"
+				  paddingRight="5"
+				  paddingTop="5">
+
+			<s:HGroup visible="{presenter.model.isLoading}"
+					  width="100%"
+					  height="100%"
+					  horizontalAlign="center"
+					  includeInLayout="{presenter.model.isLoading}"
+					  verticalAlign="middle">
+
+				<s:Label text="Učitava se diskusija..."/>
+
+			</s:HGroup>
+
+			<s:VGroup visible="{!presenter.model.isLoading}"
+					  width="100%"
+					  height="100%"
+					  includeInLayout="{!presenter.model.isLoading}">
+
+				<controls4:QuestionDiscussQuestionViewControl visible="{presenter.model.showLoadedQuestion}"
+															  includeInLayout="{presenter.model.showLoadedQuestion}"
+															  question="{presenter.model.loadedQuestion}"/>
+
+				<controls3:DiscussionsPageControl currentPageIndex="{presenter.model.currentPageIndex}"
+												  pageClick="presenter.pageClicked(event)"
+												  totalPages="{presenter.model.totalPages}"/>
+
+				<s:DataGroup width="100%"
+							 dataProvider="{presenter.model.messages}">
+
+					<s:layout>
+						<s:VerticalLayout/>
+					</s:layout>
+
+					<s:itemRenderer>
+						<fx:Component>
+							<controls4:QuestionDiscussRenderer message="{data}"
+															   presenter="{outerDocument.presenter}"/>
+
+						</fx:Component>
+					</s:itemRenderer>
+
+				</s:DataGroup>
+
+				<controls3:DiscussionsPageControl currentPageIndex="{presenter.model.currentPageIndex}"
+												  pageClick="presenter.pageClicked(event)"
+												  totalPages="{presenter.model.totalPages}"/>
+
+			</s:VGroup>
+
+			<s:VGroup visible="{!presenter.model.isLoading &amp;&amp; presenter.model.messages.length == 0}"
+					  width="100%"
+					  height="100%"
+					  gap="20"
+					  horizontalAlign="center"
+					  includeInLayout="{!presenter.model.isLoading &amp;&amp; presenter.model.messages.length == 0}">
+
+				<s:Label text="Trenutno nema poruka o ovom pitanju."
+						 width="100%"/>
+
+				<s:Label text="Ukoliko imaš neku nedoumicu vezanu za ovo pitanje, napiši poruku. Svoje poruke možeš pronaći u sekciji 'Diskusije'."
+						 width="100%"
+						 color="{ThemeColors.GRAY}"/>
+
+			</s:VGroup>
+
+		</s:VGroup>
+
+	</s:Scroller>
+
+	<s:HGroup visible="{!presenter.model.isWritingMessage}"
+			  includeInLayout="{!presenter.model.isWritingMessage}"
+			  width="100%"
+			  paddingBottom="5"
+			  paddingLeft="5"
+			  paddingRight="5"
+			  paddingTop="5">
+
+		<components:XButton id="btn"
+							label="Napiši poruku"
+							width="100%"
+							primaryColor="{ThemeColors.GREEN}"
+							click="presenter.writeMessageClicked(event)"/>
+		<components:XButton label="Zatvori diskusiju"
+							width="100%"
+							click="presenter.close()"
+							primaryColor="{ThemeColors.YELLOW}"/>
+
+	</s:HGroup>
+
+	<fx:Script>
+		<![CDATA[
+			import com.edt.mobile.utils.Settings;
+			import com.evola.driving.model.Question;
+			import com.evola.driving.util.DrivingUtils;
+			import com.evola.driving.util.ThemeColors;
+
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+
+
+			private static var _instance:QuestionDiscussPopup;
+
+			[Bindable]
+			public var presenter:QuestionDiscussPresenter;
+
+			public static function init(question:Question, showLoadedQuestion:Boolean):void
+			{
+
+				if (!_instance)
+				{
+
+					_instance=new QuestionDiscussPopup();
+					_instance.presenter=new QuestionDiscussPresenter();
+					_instance.presenter.view=_instance;
+				}
+
+				_instance.presenter.initialize(question, showLoadedQuestion);
+			}
+
+			protected function onCreationComplete(event:FlexEvent):void
+			{
+
+				FlexGlobals.topLevelApplication.addEventListener(Event.RESIZE, onApplicationResize);
+			}
+
+			private function onApplicationResize(event:Event):void
+			{
+
+				presenter.positionAndSize();
+			}
+
+			public static function isShown():Boolean
+			{
+
+				return _instance && _instance.isPopUp;
+			}
+
+			public static function hide():void
+			{
+
+				if (_instance)
+					_instance.hide();
+			}
+
+			public function hide():void
+			{
+
+				presenter.close();
+			}
+		]]>
+	</fx:Script>
+
+</s:BorderContainer>

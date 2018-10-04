@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				width="6"
+				height="6"
+				autoDrawBackground="false">
+
+	<s:BorderContainer backgroundColor="{GroupColors.getColor(int(groupId))}"
+					   backgroundAlpha="{questionIndex == selectedQuestionIndex ? 1 : 0.5}"
+					   borderVisible="false"
+					   width="6"
+					   height="6"/>
+
+	<fx:Script>
+		<![CDATA[
+			import com.evola.driving.util.GroupColors;
+
+			[Bindable]
+			public var questionIndex:int;
+
+			[Bindable]
+			public var selectedQuestionIndex:int;
+
+			[Bindable]
+			public var groupId:String;
+		]]>
+	</fx:Script>
+
+</s:ItemRenderer>

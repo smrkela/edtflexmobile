@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<components:XView xmlns:fx="http://ns.adobe.com/mxml/2009"
+				  xmlns:s="library://ns.adobe.com/flex/spark"
+				  title="Rezultat - {lessonName}"
+				  init="onShow()"
+				  xmlns:controls="com.evola.driving.controls.*"
+				  xmlns:components="com.edt.mobile.components.*"
+				  pageUrl="test-results">
+	
+	<components:navigationContent>
+		
+	</components:navigationContent>
+
+	<components:layout>
+		<s:VerticalLayout paddingBottom="5"
+						  paddingLeft="5"
+						  paddingRight="5"
+						  paddingTop="5"
+						  gap="10"/>
+	</components:layout>
+
+	<s:Label text="{descriptiveStatus}"
+			 width="100%"
+			 color="{ThemeColors.BLUE}"/>
+
+	<s:HGroup id="hbProgress"
+			  width="100%"
+			  gap="0">
+
+		<s:Rect id="hbCorrect"
+				height="10">
+			<s:fill>
+				<s:SolidColor color="{ThemeColors.GREEN}"/>
+			</s:fill>
+		</s:Rect>
+
+		<s:Rect id="hbIncorrect"
+				height="10">
+			<s:fill>
+				<s:SolidColor color="{ThemeColors.RED}"/>
+			</s:fill>
+		</s:Rect>
+
+		<s:Rect id="hbRemaining"
+				height="10">
+			<s:fill>
+				<s:SolidColor color="{ThemeColors.YELLOW}"
+							  alpha="0.2"/>
+			</s:fill>
+		</s:Rect>
+
+	</s:HGroup>
+
+	<s:Spacer height="20"/>
+
+	<s:HGroup width="100%"
+			  verticalAlign="middle">
+
+		<s:Label text="Ukupno pitanja"
+				 styleName="infoLabel"/>
+		<components:XLine width="100%"/>
+		<s:Label text="{totalTestQuestions}"
+				 color="{ThemeColors.BLUE}"
+				 fontWeight="bold"/>
+
+	</s:HGroup>
+
+	<s:HGroup width="100%"
+			  verticalAlign="middle">
+
+		<s:Label text="Odgovoreno pitanja"
+				 styleName="infoLabel"/>
+		<components:XLine width="100%"/>
+		<s:Label text="{answeredQuestions}"
+				 color="{ThemeColors.ORANGE}"
+				 fontWeight="bold"/>
+
+	</s:HGroup>
+
+	<s:HGroup width="100%"
+			  verticalAlign="middle">
+
+		<s:Label text="Tačnih odgovora"
+				 styleName="infoLabel"/>
+		<components:XLine width="100%"/>
+		<s:Label text="{correctAnswers}"
+				 color="{ThemeColors.GREEN}"
+				 fontWeight="bold"/>
+
+	</s:HGroup>
+
+	<s:HGroup width="100%"
+			  verticalAlign="middle">
+
+		<s:Label text="Netačnih odgovora"
+				 styleName="infoLabel"/>
+		<components:XLine width="100%"/>
+		<s:Label text="{incorrectAnswers}"
+				 color="{ThemeColors.RED}"
+				 fontWeight="bold"/>
+
+	</s:HGroup>
+
+	<s:Spacer height="100%"/>
+
+	<s:HGroup width="100%"
+			  horizontalAlign="center">
+
+		<components:XButton label="Vrati se na sve lekcije"
+							primaryColor="{ThemeColors.ORANGE}"
+							click="onFinishTesting(event)"/>
+
+	</s:HGroup>
+
+	<fx:Script>
+		<![CDATA[
+			import com.evola.driving.util.ThemeColors;
+
+			import mx.events.FlexEvent;
+
+			[Bindable]
+			private var lessonName:String;
+
+			[Bindable]
+			private var descriptiveStatus:String;
+
+			[Bindable]
+			private var descriptiveStatusColor:uint=0x000000;
+
+			[Bindable]
+			private var totalTestQuestions:int;
+
+			[Bindable]
+			private var answeredQuestions:int;
+
+			[Bindable]
+			private var correctAnswers:int;
+
+			[Bindable]
+			private var incorrectAnswers:int;
+
+			protected function onShow():void
+			{
+
+				totalTestQuestions=data.numberOfQuestions;
+				answeredQuestions=data.answeredQuestions;
+				correctAnswers=data.correctlyAnswered;
+				incorrectAnswers=data.incorectlyAnswered;
+				lessonName=data.lessonName;
+
+				setDescriptiveStatus();
+				setProgressWidths();
+			}
+
+			private function setDescriptiveStatus():void
+			{
+
+				//deskriptivni status je u obliku:
+				//Bravo, uspesno si odgovorio na 95% pitanja
+				//Odlicno, uspesno si resio 80% pitanja
+				//Dobro je ali moze i bolje, resio si 65% pitanja
+				//Nije lose za pocetak, resio si 45% pitanja
+				//Moras jos da vezbas, resio si svega 25%
+				//Mozda je bolje da pesacis, nisi dao ni jedan tacan odgovor
+
+				var percent:Number=Math.round(correctAnswers / totalTestQuestions * 100);
+
+				var status:String="";
+				var color:uint=0x000000;
+
+				if (percent > 100)
+					percent=100;
+
+				if (percent == 100)
+				{
+
+					status=getTopMessage();
+					color=0x008A00;
+				}
+				else if (percent > 95)
+				{
+
+					status="Bravo, uspešno odogovoreno na " + percent + "% pitanja!";
+					color=0x008A00;
+				}
+				else if (percent >= 80)
+				{
+
+					status="Odlično, uspešno odgovoreno na " + percent + "% pitanja!";
+					color=0x5133AB;
+				}
+				else if (percent >= 60)
+				{
+
+					status="Dobro je ali može i bolje. Uspešno odgovoreno na " + percent + "% pitanja.";
+					color=0x5133AB;
+				}
+				else if (percent >= 40)
+				{
+
+					status="Nije loše za početak. Uspešno odgovoreno na " + percent + "% pitanja.";
+					color=0xAC193D;
+				}
+				else if (percent > 0)
+				{
+
+					status="Moraš još da vežbaš. Uspešno rešeno svega " + percent + "% pitanja";
+					color=0xAC193D;
+				}
+				else
+				{
+
+					status=getBottomMessage();
+					color=0xAC193D;
+				}
+
+				descriptiveStatus=status;
+				descriptiveStatusColor=color;
+			}
+
+			private function getTopMessage():String
+			{
+
+				var randomIndex:int=Math.round(Math.random() * 5);
+
+				var messages:Array=[];
+
+				messages[0]="Svaka čast! Sve je tačno odgovoreno!";
+				messages[1]="Svaka čast! Sve je tačno odgovoreno!";
+				messages[2]="Svaka čast! Sve je tačno odgovoreno!";
+				messages[3]="Svaka čast! Sve je tačno odgovoreno!";
+				messages[4]="Svaka čast! Sve je tačno odgovoreno!";
+				messages[5]="Svaka čast! Sve je tačno odgovoreno!";
+
+				return messages[randomIndex];
+			}
+
+			private function getBottomMessage():String
+			{
+
+				var randomIndex:int=Math.round(Math.random() * 5);
+
+				var messages:Array=[];
+
+				messages[0]="Ništa nije tačno odgovoreno :(";
+				messages[1]="Ništa nije tačno odgovoreno :(";
+				messages[2]="Ništa nije tačno odgovoreno :(";
+				messages[3]="Ništa nije tačno odgovoreno :(";
+				messages[4]="Ništa nije tačno odgovoreno :(";
+				messages[5]="Ništa nije tačno odgovoreno :(";
+
+				return messages[randomIndex];
+			}
+
+			protected function onFinishTesting(event:MouseEvent):void
+			{
+
+				//navigator.backKeyUpHandler();
+				navigator.popView();
+				navigator.popView();
+			}
+
+			private function setProgressWidths():void
+			{
+
+				var answeredPercent:Number=Math.round(answeredQuestions / totalTestQuestions * 100);
+				var correctPercent:Number=Math.round(correctAnswers / totalTestQuestions * 100);
+				var incorrectPercent:Number=Math.round(incorrectAnswers / totalTestQuestions * 100);
+
+				var totalWidth:Number=hbProgress.width;
+				hbCorrect.width=totalWidth * correctPercent / 100;
+				hbIncorrect.width=totalWidth * incorrectPercent / 100;
+				hbRemaining.width=totalWidth - hbCorrect.width - hbIncorrect.width;
+			}
+		]]>
+	</fx:Script>
+
+</components:XView>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				width="100%"
+				xmlns:components="com.edt.mobile.components.*">
+
+	<s:layout>
+		<s:HorizontalLayout paddingLeft="4"
+							paddingRight="4"
+							paddingTop="4"
+							paddingBottom="4"
+							verticalAlign="middle"/>
+	</s:layout>
+
+	<components:EImage width="30"
+					   height="30"
+					   source="{Settings.SERVER + '/resource?path=/users/'+data.@userid + '/smallImage'}"/>
+
+	<s:VGroup width="100%">
+		<s:Label text="{data.@username}"
+				 width="100%"
+				 fontWeight="bold"/>
+		<s:Label text="{data.@level}. nivo"
+				 styleName="infoLabel"/>
+	</s:VGroup>
+
+	<s:HGroup>
+		<s:Label text="{data.@points}"
+				 color="{getColor(parentDocument.parentDocument.presenter.model.selectedSection)}"
+				 fontWeight="bold"
+				 textAlign="right"/>
+		<s:Label text="poena"/>
+
+	</s:HGroup>
+
+	<fx:Script>
+		<![CDATA[
+			import com.edt.mobile.utils.Settings;
+			import com.evola.driving.util.ThemeColors;
+
+			private function getColor(section:int):uint
+			{
+
+				if (section == 1)
+					return ThemeColors.GREEN;
+
+				if (section == 2)
+					return ThemeColors.ORANGE;
+
+				return ThemeColors.YELLOW;
+			}
+		]]>
+	</fx:Script>
+
+</s:ItemRenderer>

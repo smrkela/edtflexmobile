@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Image xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark">
+
+	<s:source>
+		<s:MultiDPIBitmapSource source160dpi="/assets/images/low-res/{sourceUrl}"
+								source240dpi="/assets/images/mid-res/{sourceUrl}"
+								source320dpi="/assets/images/high-res/{sourceUrl}"/>
+	</s:source>
+
+	<fx:Declarations>
+
+		<fx:String id="sourceUrl"/>
+
+	</fx:Declarations>
+
+</s:Image>

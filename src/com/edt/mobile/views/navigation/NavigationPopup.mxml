@@ -1,0 +1,496 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   width="200"
+				   height="100%"
+				   backgroundColor="{ThemeColors.BLUE}"
+				   borderVisible="false"
+				   dropShadowVisible="true"
+				   xmlns:components="com.edt.mobile.components.*"
+				   mouseDownOutside="onMouseOutside(event)"
+				   xmlns:controls="com.edt.mobile.views.navigation.controls.*"
+				   added="onChildAdded(event)"
+				   creationComplete="onCreationComplete(event)">
+
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+
+	<s:Scroller width="100%"
+				height="100%">
+
+		<s:VGroup width="100%">
+
+			<s:HGroup width="100%"
+					  paddingLeft="4"
+					  paddingRight="4"
+					  paddingTop="4"
+					  paddingBottom="4"
+					  verticalAlign="middle">
+
+				<components:EImage width="30"
+								   height="30"
+								   source="{Settings.SERVER + '/resource?path=/users/'+Session.model.user.id + '/smallImage'}"/>
+
+				<s:Label text="{Session.model.user.firstName + ' ' + Session.model.user.lastName}"
+						 color="#FFFFFF"
+						 width="100%"/>
+
+			</s:HGroup>
+
+			<s:Spacer height="10"/>
+
+			<controls:NavigationButton label="Glavna"
+									   icon="@Embed(source='assets/images/icons/home.png')"
+									   id="nbMain"
+									   click="onMainClicked(event)"/>
+
+			<s:Spacer height="10"/>
+
+			<controls:NavigationSectionTitle title="Pripremanje"/>
+
+			<!--
+			<controls:NavigationButton label="Učenje"
+									   id="nbLearning"
+									   click="onLearningClicked(event)"/>
+			<controls:NavigationButton label="Provera"
+									   id="nbTesting"
+									   click="onTestingClicked(event)"/>
+			-->
+
+			<controls:NavigationButton label="Prethodna učenja"
+									   icon="@Embed(source='assets/images/icons/book_20.png')"
+									   id="nbPreviousLearning"
+									   click="onPreviousLearningsClicked(event)"/>
+			<controls:NavigationButton label="Prethodne provere"
+									   icon="@Embed(source='assets/images/icons/pencil_20.png')"
+									   id="nbPreviousTesting"
+									   click="onPreviousTestingsClicked(event)"/>
+			<controls:NavigationButton label="Top liste"
+									   icon="@Embed(source='assets/images/icons/top_list.png')"
+									   id="nbTopLists"
+									   click="onTopListsClicked(event)"/>
+
+			<s:Spacer height="10"/>
+
+			<controls:NavigationSectionTitle title="Test dana"/>
+
+			<!--
+			<controls:NavigationButton label="Test dana"
+									   id="nbDailyTest"
+									   click="onDailyTestClicked(event)"/>
+			-->
+
+			<controls:NavigationButton label="Svi testovi"
+									   icon="@Embed(source='assets/images/icons/list.png')"
+									   id="nbAllDailyTests"
+									   click="onAllDailyTestsClicked(event)"/>
+			<controls:NavigationButton label="Top lista"
+									   icon="@Embed(source='assets/images/icons/top_list.png')"
+									   id="nbDailyTestTopList"
+									   click="onDailyTestsTopListClicked(event)"/>
+
+			<s:Spacer height="10"/>
+
+			<controls:NavigationSectionTitle title="Ostalo"/>
+
+			<controls:NavigationButton label="Diskusije"
+									   icon="@Embed(source='assets/images/icons/discussions.png')"
+									   id="nbDiscussions"
+									   click="onDiscussionsClicked(event)"/>
+			<controls:NavigationButton label="Informacije"
+									   icon="@Embed(source='assets/images/icons/info.png')"
+									   id="nbInformations"
+									   click="onInfoClicked(event)"/>
+			<controls:NavigationButton label="Podešavanja"
+									   icon="@Embed(source='assets/images/icons/wrench.png')"
+									   id="nbSettings"
+									   click="onSettingsClicked(event)"/>
+			<controls:NavigationButton label="Izađi iz aplikacije"
+									   icon="@Embed(source='assets/images/icons/exit.png')"
+									   id="nbExit"
+									   click="onExitClicked(event)"/>
+
+		</s:VGroup>
+
+	</s:Scroller>
+
+	<fx:Declarations>
+
+		<s:Animate duration="300"
+				   id="animationShow"
+				   target="{this}"
+				   effectEnd="onAnimationEnd(event)">
+			<s:SimpleMotionPath property="x"
+								valueFrom="-200"
+								valueTo="0"/>
+		</s:Animate>
+
+	</fx:Declarations>
+
+	<fx:Script>
+		<![CDATA[
+			import com.edt.mobile.components.MenuButton;
+			import com.edt.mobile.utils.Settings;
+			import com.edt.mobile.views.dailytest.list.DailyTestListView;
+			import com.edt.mobile.views.dailytest.overview.DailyTestOverviewView;
+			import com.edt.mobile.views.dailytest.toplist.DailyTestTopListView;
+			import com.edt.mobile.views.discussion.view.DiscussionsView;
+			import com.edt.mobile.views.groups.GroupsView;
+			import com.edt.mobile.views.home.HomeView;
+			import com.edt.mobile.views.info.InfoView;
+			import com.edt.mobile.views.sessions.SessionsView;
+			import com.edt.mobile.views.settings.SettingsView;
+			import com.edt.mobile.views.toplists.TopListsView;
+			import com.evola.driving.Session;
+			import com.evola.driving.util.ThemeColors;
+			
+			import mx.core.FlexGlobals;
+			import mx.events.EffectEvent;
+			import mx.events.FlexEvent;
+			import mx.events.FlexMouseEvent;
+			import mx.events.ResizeEvent;
+			import mx.managers.PopUpManager;
+			
+			import spark.components.View;
+
+			private static var _instance:NavigationPopup;
+
+			//svi dugmici 
+			private var _buttons:Array=[];
+
+			public static function show():void
+			{
+
+				if (!_instance)
+				{
+
+					_instance=new NavigationPopup();
+				}
+
+				if (!isMenuEnabled())
+					return;
+
+				_instance.show();
+
+				PopUpManager.addPopUp(_instance, FlexGlobals.topLevelApplication as DisplayObject, true);
+
+				_instance.position();
+			}
+
+			public function show():void
+			{
+
+				init();
+				position();
+			}
+
+			private function position():void
+			{
+
+				var app:EDTFlexMobile=FlexGlobals.topLevelApplication as EDTFlexMobile;
+
+				this.height=app.height;
+
+				animationShow.play();
+			}
+
+			public static function isShown():Boolean
+			{
+
+				return _instance && _instance.isPopUp;
+			}
+
+			public static function hide():void
+			{
+
+				if (_instance)
+					_instance.hide();
+			}
+
+			protected function onAnimationEnd(event:EffectEvent):void
+			{
+
+				//ako smo zavrsili sa zatvaranjem onda uklanjamo popup
+				if (x < 0)
+					PopUpManager.removePopUp(this);
+			}
+
+			public function hide():void
+			{
+
+				animationShow.play(null, true);
+			}
+
+			protected function onMouseOutside(event:FlexMouseEvent):void
+			{
+
+				hide();
+			}
+
+			private function init():void
+			{
+
+				if (!initialized)
+					return;
+
+				var app:EDTFlexMobile=FlexGlobals.topLevelApplication as EDTFlexMobile;
+
+				var activeView:View=app.navigator.activeView;
+
+				unselectAllButtons();
+
+				if (activeView is HomeView)
+				{
+
+					nbMain.selected=true;
+				}
+				else if (activeView is GroupsView)
+				{
+
+//					if (activeView.data.type == "learning")
+//						nbLearning.selected=true;
+//					else
+//						nbTesting.selected=true;
+				}
+				else if (activeView is SessionsView)
+				{
+
+					if (activeView.data.type == "learning")
+						nbPreviousLearning.selected=true;
+					else
+						nbPreviousTesting.selected=true;
+				}
+				else if (activeView is TopListsView)
+				{
+
+					nbTopLists.selected=true;
+				}
+				else if (activeView is DailyTestOverviewView)
+				{
+
+//					nbDailyTest.selected=true;
+				}
+				else if (activeView is DailyTestListView)
+				{
+
+					nbAllDailyTests.selected=true;
+				}
+				else if (activeView is DailyTestTopListView)
+				{
+
+					nbTopLists.selected=true;
+				}
+				else if (activeView is DiscussionsView)
+				{
+
+					nbDiscussions.selected=true;
+				}
+				else if (activeView is InfoView)
+				{
+
+					nbInformations.selected=true;
+				}
+				else if (activeView is SettingsView)
+				{
+
+					nbSettings.selected=true;
+				}
+			}
+
+			protected function onChildAdded(event:Event):void
+			{
+
+				var target:Object=event.target;
+
+				if (target is NavigationButton)
+				{
+
+					_buttons.push(target);
+				}
+			}
+
+			private function unselectAllButtons():void
+			{
+
+				for each (var button:NavigationButton in _buttons)
+				{
+
+					button.selected=false;
+				}
+			}
+
+			protected function onMainClicked(event:MouseEvent):void
+			{
+
+				var app:EDTFlexMobile=FlexGlobals.topLevelApplication as EDTFlexMobile;
+
+				pushView(HomeView);
+			}
+
+			protected function onLearningClicked(event:MouseEvent):void
+			{
+
+				pushView(GroupsView, {type: "learning"});
+			}
+
+			protected function onTestingClicked(event:MouseEvent):void
+			{
+
+				pushView(GroupsView, {type: "learning"});
+			}
+
+			protected function onPreviousLearningsClicked(event:MouseEvent):void
+			{
+
+				pushView(SessionsView, {numOfQuestions: 0, type: "learning"});
+			}
+
+			protected function onPreviousTestingsClicked(event:MouseEvent):void
+			{
+
+				pushView(SessionsView, {numOfQuestions: 0, type: "testing"});
+			}
+
+			protected function onCreationComplete(event:FlexEvent):void
+			{
+
+				init();
+
+				(FlexGlobals.topLevelApplication as EDTFlexMobile).addEventListener(Event.RESIZE, onResize);
+			}
+
+			protected function onTopListsClicked(event:MouseEvent):void
+			{
+
+				pushView(TopListsView);
+			}
+
+			protected function onDailyTestClicked(event:MouseEvent):void
+			{
+
+				pushView(DailyTestOverviewView);
+			}
+
+			protected function onAllDailyTestsClicked(event:MouseEvent):void
+			{
+
+				pushView(DailyTestListView);
+			}
+
+			protected function onDailyTestsTopListClicked(event:MouseEvent):void
+			{
+
+				pushView(DailyTestTopListView);
+			}
+
+			protected function onDiscussionsClicked(event:MouseEvent):void
+			{
+
+				pushView(DiscussionsView);
+			}
+
+			protected function onInfoClicked(event:MouseEvent):void
+			{
+
+				pushView(InfoView);
+			}
+
+			protected function onSettingsClicked(event:MouseEvent):void
+			{
+
+				pushView(SettingsView);
+			}
+
+			private function pushView(viewClass:Class, viewData:Object=null):void
+			{
+
+				var app:EDTFlexMobile=FlexGlobals.topLevelApplication as EDTFlexMobile;
+
+				//ako je isti view onda ga samo osvezavamo
+				if (app.navigator.activeView is viewClass)
+				{
+
+					app.navigator.activeView.dispatchEvent(new Event("init"));
+				}
+				else
+				{
+
+					app.navigator.pushView(viewClass, viewData);
+				}
+
+				hide();
+			}
+
+			protected function onResize(event:ResizeEvent):void
+			{
+
+				var app:EDTFlexMobile=FlexGlobals.topLevelApplication as EDTFlexMobile;
+
+				this.height=app.height;
+			}
+
+			private static function isMenuEnabled():Boolean
+			{
+
+				var app:EDTFlexMobile=FlexGlobals.topLevelApplication as EDTFlexMobile;
+
+				var activeView:View=app.navigator.activeView;
+
+				var hasMenuButton:Boolean=false;
+
+				//ako actionbar nije visible onda sigurno nemamo menu
+				if (activeView && activeView.actionBarVisible)
+				{
+
+					var actionContent:Array=activeView.actionContent;
+
+					//ako je action content null onda imamo menu button jer je on ugradjen u root aplikaciju
+
+					if (actionContent == null)
+					{
+
+						hasMenuButton=true;
+					}
+					else
+					{
+
+						for each (var item:Object in actionContent)
+						{
+
+							if (item is MenuButton)
+							{
+
+								hasMenuButton=true;
+
+								break;
+							}
+						}
+					}
+				}
+
+				return hasMenuButton;
+			}
+			
+			public static function setup():void
+			{
+
+				if(!_instance){
+					
+					_instance = new NavigationPopup();
+				}
+				
+				PopUpManager.addPopUp(_instance, FlexGlobals.topLevelApplication as DisplayObject);
+				PopUpManager.removePopUp(_instance);
+			}
+			
+			protected function onExitClicked(event:MouseEvent):void
+			{
+
+				NativeApplication.nativeApplication.exit();
+			}
+			
+		]]>
+	</fx:Script>
+
+</s:BorderContainer>

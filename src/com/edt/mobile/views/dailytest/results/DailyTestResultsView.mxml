@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<components:XView xmlns:fx="http://ns.adobe.com/mxml/2009"
+				  xmlns:s="library://ns.adobe.com/flex/spark"
+				  title="{getTitle(presenter.model.date, presenter.model.currentIndex, presenter.model.questions, presenter.model.isOverview)}"
+				  init="presenter.viewShown()"
+				  destructionPolicy="never"
+				  xmlns:lessons="com.edt.mobile.views.lessons.*"
+				  xmlns:components="com.edt.mobile.components.*"
+				  pageUrl="dailyTestResult"
+				  xmlns:results="com.edt.mobile.views.dailytest.results.*"
+				  xmlns:components1="com.edt.mobile.views.learning.components.*"
+				  currentState="{presenter.model.isOverview ? 'overview' : 'default'}"
+				  xmlns:controls="com.edt.mobile.views.dailytest.results.controls.*">
+	
+	<components:actionContent>
+	</components:actionContent>
+
+	<components:states>
+		<s:State name="default"/>
+		<s:State name="overview"/>
+	</components:states>
+
+	<components:layout>
+
+		<s:VerticalLayout gap="4"
+						  paddingBottom="4"
+						  paddingLeft="4"
+						  paddingRight="4"
+						  paddingTop="4"
+						  horizontalAlign="center"/>
+
+	</components:layout>
+
+	<s:BusyIndicator visible="{presenter.model.isLoading}"
+					 includeInLayout="{presenter.model.isLoading}"/>
+
+	<s:Scroller width="100%"
+				height="100%"
+				includeIn="default">
+
+		<s:VGroup width="100%"
+				  gap="2">
+
+			<s:BorderContainer width="100%"
+							   borderVisible="false"
+							   backgroundColor="{presenter.model.currentQuestion.isCorrectlyAnswered() ? ThemeColors.ORANGE : ThemeColors.ORANGE}">
+
+				<s:layout>
+					<s:HorizontalLayout paddingLeft="2"
+										paddingRight="2"
+										paddingBottom="4"
+										paddingTop="4"
+										verticalAlign="middle"/>
+				</s:layout>
+
+				<s:Label text="{getResultLabel(presenter.model.currentQuestion)}"
+						 color="#FFFFFF"
+						 width="100%"/>
+
+				<components:XButton label="Pregled"
+									paddingBottom="4"
+									paddingTop="4"
+									click="presenter.showOverviewClicked()"/>
+
+			</s:BorderContainer>
+
+			<components1:QuestionControl id="questionControl"
+										 question="{presenter.model.currentQuestion}"
+										 visible="{presenter.model.currentQuestion != null}"/>
+
+		</s:VGroup>
+
+	</s:Scroller>
+
+	<s:HGroup width="100%"
+			  includeIn="default">
+
+		<components:XButton label="Prethodno"
+							primaryColor="0xFFC40D"
+							width="100%"
+							height="100%"
+							visible="{presenter.model.currentIndex != 0}"
+							click="presenter.previousQuestionClicked()"/>
+		<components:XButton label="Sledeće"
+							primaryColor="0x00A300"
+							icon="@Embed(source='assets/images/icons/next.png')"
+							width="100%"
+							visible="{presenter.model.currentIndex != presenter.model.questions.length - 1}"
+							includeInLayout="{presenter.model.currentIndex != presenter.model.questions.length - 1}"
+							click="presenter.nextQuestionClicked()"/>
+
+		<components:XButton label="Završi pregled"
+							primaryColor="0x00A300"
+							icon="@Embed(source='assets/images/icons/flag.png')"
+							width="100%"
+							visible="{presenter.model.currentIndex == presenter.model.questions.length - 1}"
+							includeInLayout="{presenter.model.currentIndex == presenter.model.questions.length - 1}"
+							click="presenter.finishClicked()"/>
+
+	</s:HGroup>
+
+	<controls:DailyTestResultOverview includeIn="overview"
+									  presenter="{presenter}"
+									  visible="{!presenter.model.isLoading}"
+									  includeInLayout="{!presenter.model.isLoading}"/>
+
+
+	<fx:Declarations>
+
+		<results:DailyTestResultsPresenter id="presenter"
+										   view="{this}"/>
+
+	</fx:Declarations>
+
+
+	<fx:Script>
+		<![CDATA[
+			import com.evola.driving.model.Question;
+			import com.evola.driving.util.DateUtils;
+			import com.evola.driving.util.ThemeColors;
+
+			import mx.collections.ListCollectionView;
+
+			private function getResultLabel(currentQuestion:Question):String
+			{
+
+				var text:String="";
+
+				if (currentQuestion.isAnswered)
+				{
+					if (currentQuestion.isCorrectlyAnswered())
+						text="Tačno odgovoreno.";
+					else
+						text="Netačno odgovoreno.";
+				}
+				else
+				{
+
+					text="Nije odgovoreno.";
+				}
+
+				return text;
+			}
+
+			private function getTitle(date:Date, currentIndex:int, questions:ListCollectionView, isOverview:Boolean):Object
+			{
+
+				var text:String="Rezultat " + DateUtils.formatDateSimple(date);
+
+				if (!isOverview)
+					text+="    " + (currentIndex + 1) + "/" + presenter.model.questions.length;
+
+				return text;
+			}
+		]]>
+	</fx:Script>
+
+</components:XView>

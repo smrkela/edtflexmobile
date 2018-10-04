@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<components:XView xmlns:fx="http://ns.adobe.com/mxml/2009"
+				  xmlns:s="library://ns.adobe.com/flex/spark"
+				  xmlns:login="com.edt.mobile.views.login.*"
+				  xmlns:components="com.edt.mobile.components.*"
+				  init="presenter.viewInitialized()"
+				  title="Registracija"
+				  pageUrl="register"
+				  xmlns:register="com.edt.mobile.views.register.*">
+	
+	<components:actionContent>
+	</components:actionContent>
+
+	<components:layout>
+		<s:VerticalLayout/>
+	</components:layout>
+
+	<s:Scroller width="100%"
+				height="100%">
+
+		<s:VGroup width="100%"
+				  gap="5"
+				  paddingBottom="5"
+				  paddingTop="5"
+				  paddingLeft="5"
+				  paddingRight="5"
+				  horizontalAlign="center">
+
+			<s:Label text="Unesite vaše informacije o potvrdite registraciju."
+					 width="100%"
+					 styleName="infoLabel"/>
+
+			<components:XFormBox>
+
+				<s:Label text="Ime"
+						 styleName="infoLabel"/>
+				<s:TextInput change="presenter.model.firstName = event.target.text"
+							 text="{presenter.model.firstName}"
+							 width="100%"/>
+
+			</components:XFormBox>
+
+			<components:XFormBox>
+
+				<s:Label text="Prezime"
+						 styleName="infoLabel"/>
+				<s:TextInput change="presenter.model.lastName = event.target.text"
+							 text="{presenter.model.lastName}"
+							 width="100%"/>
+
+			</components:XFormBox>
+
+			<components:XFormBox>
+
+				<s:Label text="Korisničko ime"
+						 styleName="infoLabel"/>
+				<s:TextInput change="presenter.model.username = event.target.text"
+							 text="{presenter.model.username}"
+							 width="100%"/>
+
+			</components:XFormBox>
+
+			<components:XFormBox>
+
+				<s:Label text="Šifra"
+						 styleName="infoLabel"/>
+				<s:TextInput change="presenter.model.password = event.target.text"
+							 text="{presenter.model.password}"
+							 width="100%"/>
+
+			</components:XFormBox>
+
+			<components:XFormBox>
+
+				<s:Label text="E-mail"
+						 styleName="infoLabel"/>
+				<s:TextInput change="presenter.model.email = event.target.text"
+							 text="{presenter.model.email}"
+							 width="100%"/>
+
+			</components:XFormBox>
+
+			<components:XFormBox>
+
+				<s:Label text="Pol"
+						 styleName="infoLabel"/>
+
+				<s:HGroup width="100%">
+
+					<s:RadioButton value="true"
+								   group="{rbgSex}"
+								   label="Muški"/>
+					<s:RadioButton value="false"
+								   group="{rbgSex}"
+								   label="Ženski"/>
+
+				</s:HGroup>
+
+			</components:XFormBox>
+
+			<s:Spacer height="10"/>
+
+			<components:XButton label="Završi registraciju"
+								primaryColor="{ThemeColors.GREEN}"
+								click="presenter.registerClicked()"/>
+
+		</s:VGroup>
+
+
+	</s:Scroller>
+
+
+	<fx:Declarations>
+
+		<register:RegisterPresenter id="presenter"
+									view="{this}"/>
+
+		<s:RadioButtonGroup id="rbgSex"
+							change="presenter.model.isMale = event.target.selectedValue"
+							selectedValue="{presenter.model.isMale}"/>
+
+	</fx:Declarations>
+
+	<fx:Script>
+		<![CDATA[
+			import com.evola.driving.util.ThemeColors;
+		]]>
+	</fx:Script>
+
+</components:XView>

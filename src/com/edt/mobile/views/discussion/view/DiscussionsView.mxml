@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<components:XView xmlns:fx="http://ns.adobe.com/mxml/2009"
+				  xmlns:s="library://ns.adobe.com/flex/spark"
+				  xmlns:login="com.edt.mobile.views.login.*"
+				  xmlns:components="com.edt.mobile.components.*"
+				  init="presenter.viewInitialized()"
+				  title="Diskusije"
+				  pageUrl="discussions"
+				  xmlns:register="com.edt.mobile.views.register.*"
+				  xmlns:view="com.edt.mobile.views.discussion.view.*"
+				  currentState="{presenter.model.mode}"
+				  xmlns:components1="com.edt.mobile.views.discussion.view.components.*">
+
+	<components:layout>
+		<s:VerticalLayout/>
+	</components:layout>
+
+	<components:states>
+		<s:State name="my"/>
+		<s:State name="all"/>
+	</components:states>
+
+	<s:Scroller width="100%"
+				height="100%">
+
+		<s:VGroup width="100%"
+				  gap="5"
+				  paddingBottom="5"
+				  paddingTop="5"
+				  paddingLeft="5"
+				  paddingRight="5"
+				  horizontalAlign="center">
+
+			<s:HGroup width="100%">
+
+				<components:XButton label="Moje diskusije"
+									isSelected="{presenter.model.mode == 'my'}"
+									primaryColor="{ThemeColors.GREEN}"
+									secondaryColor="{ThemeColors.GREEN}"
+									primaryAlpha="0.5"
+									secondaryAlpha="1"
+									click="presenter.myDiscussionsClicked()"
+									width="100%"/>
+
+				<components:XButton label="Sve diskusije"
+									isSelected="{presenter.model.mode == 'all'}"
+									primaryColor="{ThemeColors.ORANGE}"
+									secondaryColor="{ThemeColors.ORANGE}"
+									primaryAlpha="0.5"
+									secondaryAlpha="1"
+									click="presenter.allDiscussionsClicked()"
+									width="100%"/>
+
+			</s:HGroup>
+
+			<s:BusyIndicator visible="{presenter.model.isLoading}"
+							 includeInLayout="{presenter.model.isLoading}"/>
+
+			<s:Label text="{presenter.model.mode == 'my' ? 'Još uvek nemaš svojih diskusija o pitanjima.' : 'Još uvek nema diskusija o pitanjima.'}"
+					 color="{ThemeColors.GRAY}"
+					 paddingTop="10"
+					 width="100%"
+					 visible="{presenter.model.noMessages}"
+					 includeInLayout="{presenter.model.noMessages}"/>
+
+			<components1:MyDiscussionsComponent includeIn="my"
+												presenter="{presenter}"/>
+
+			<components1:AllDiscussionsComponent includeIn="all"
+												 presenter="{presenter}"/>
+
+
+		</s:VGroup>
+
+
+	</s:Scroller>
+
+
+	<fx:Declarations>
+
+		<view:DiscussionsPresenter id="presenter"
+								   view="{this}"/>
+
+	</fx:Declarations>
+
+	<fx:Script>
+		<![CDATA[
+			import com.evola.driving.util.ThemeColors;
+		]]>
+	</fx:Script>
+
+</components:XView>

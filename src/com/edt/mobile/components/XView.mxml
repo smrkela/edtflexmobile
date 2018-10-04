@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		title=""
+		show="onShow(event)"
+		viewActivate="onActivate(event)"
+		menuKeyPressed="onMenuKey(event)"
+		skinClass="com.edt.mobile.skins.ViewSkin">
+
+	<fx:Metadata>
+		[Event(name="init", type="flash.events.Event")]
+	</fx:Metadata>
+
+	<fx:Script>
+		<![CDATA[
+			import com.edt.mobile.utils.GAUtils;
+			import com.edt.mobile.views.navigation.NavigationPopup;
+			import com.google.analytics.GATracker;
+
+			import flash.utils.getTimer;
+
+			import mx.events.FlexEvent;
+
+			private var tracker:GATracker;
+
+			[Bindable]
+			public var pageUrl:String;
+
+			private function onShow(event:FlexEvent):void
+			{
+
+				dispatchEvent(new Event("init"));
+			}
+
+			protected function onActivate(event:Event):void
+			{
+
+				setupTracker();
+			}
+
+			private function setupTracker():void
+			{
+
+				GAUtils.trackPageview(GAUtils.url(pageUrl));
+			}
+
+			protected function onMenuKey(event:FlexEvent):void
+			{
+
+				NavigationPopup.show();
+			}
+		]]>
+	</fx:Script>
+
+</s:View>

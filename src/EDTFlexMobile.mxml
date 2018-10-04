@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ViewNavigatorApplication xmlns:fx="http://ns.adobe.com/mxml/2009"
+							xmlns:s="library://ns.adobe.com/flex/spark"
+							applicationDPI="160"
+							firstView="com.edt.mobile.views.login.LoginView"
+							splashScreenImage="com.edt.mobile.components.SplashScreenImage"
+							addedToStage="onAddedToStage(event)"
+							xmlns:components="com.edt.mobile.components.*">
+
+	<s:navigationContent>
+		<s:Button label="Nazad"
+				  click="navigator.backKeyUpHandler()"/>
+	</s:navigationContent>
+	<s:actionContent>
+		<components:MenuButton/>
+	</s:actionContent>
+
+	<fx:Style source="assets/css/Styles.css"/>
+
+	<fx:Script>
+		<![CDATA[
+			import com.edt.mobile.components.XAlertPopup;
+			import com.edt.mobile.components.XNotificationPopup;
+			import com.edt.mobile.utils.GAUtils;
+			import com.edt.mobile.views.discussion.popup.QuestionDiscussPopup;
+			import com.edt.mobile.views.navigation.NavigationPopup;
+
+			override protected function backKeyUpHandler(event:KeyboardEvent):void
+			{
+				
+				//ako je prikazan popup za diskusije onda samo njega zatvaramo
+				if(QuestionDiscussPopup.isShown()){
+					
+					QuestionDiscussPopup.hide();
+					return;
+				}
+
+				//ako je prikazana navigacija onda samo nju zatvaramo
+				if (NavigationPopup.isShown())
+				{
+
+					NavigationPopup.hide();
+					return;
+				}
+
+				var prevent:Boolean=false;
+
+				prevent||=XNotificationPopup.isShown();
+				prevent||=XAlertPopup.isShown();
+
+				if (prevent)
+				{
+
+					XNotificationPopup.close();
+					XAlertPopup.close();
+				}
+				else
+				{
+					super.backKeyUpHandler(event);
+				}
+			}
+			
+			protected function onAddedToStage(event:Event):void
+			{
+
+				GAUtils.setup();
+				
+				NavigationPopup.setup();
+			}
+			
+		]]>
+	</fx:Script>
+
+</s:ViewNavigatorApplication>

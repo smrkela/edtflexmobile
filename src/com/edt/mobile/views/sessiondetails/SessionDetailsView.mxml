@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<components:XView xmlns:fx="http://ns.adobe.com/mxml/2009"
+				  xmlns:s="library://ns.adobe.com/flex/spark"
+				  title="{presenter.model.isLearning ? 'Pregled učenja' : 'Pregled provere'}"
+				  xmlns:home="com.edt.mobile.views.home.*"
+				  init="presenter.viewShown()"
+				  destructionPolicy="never"
+				  xmlns:sessions="com.edt.mobile.views.sessions.*"
+				  xmlns:controls="com.edt.mobile.views.sessions.controls.*"
+				  xmlns:components="com.edt.mobile.components.*"
+				  xmlns:sessiondetails="com.edt.mobile.views.sessiondetails.*"
+				  xmlns:controls1="com.edt.mobile.views.sessiondetails.controls.*"
+				  pageUrl="{presenter.model.isLearning ? 'session-details/learning' : 'session-details/testing'}">
+
+	<components:layout>
+		<s:VerticalLayout horizontalAlign="center"
+						  gap="5"
+						  paddingBottom="5"
+						  paddingLeft="4"
+						  paddingRight="4"
+						  paddingTop="5"/>
+	</components:layout>
+
+	<s:Label width="100%"
+			 styleName="infoLabel"
+			 text="{presenter.model.title}"/>
+
+	<s:BusyIndicator visible="{presenter.model.isLoading}"
+					 includeInLayout="{presenter.model.isLoading}"/>
+
+	<s:List width="100%"
+			height="100%"
+			contentBackgroundColor="#FFFFFF"
+			dataProvider="{presenter.model.dataProvider}"
+			styleName="topList">
+
+		<s:itemRenderer>
+			<fx:Component>
+				<controls1:SessionDetailsItemRenderer/>
+			</fx:Component>
+		</s:itemRenderer>
+
+	</s:List>
+
+	<fx:Declarations>
+		<sessiondetails:SessionDetailsPresenter id="presenter"
+												view="{this}"/>
+	</fx:Declarations>
+
+	<fx:Script>
+		<![CDATA[
+			
+		]]>
+	</fx:Script>
+
+</components:XView>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SkinnablePopUpContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+						   xmlns:s="library://ns.adobe.com/flex/spark"
+						   backgroundColor="{ThemeColors.GRAY}"
+						   backgroundAlpha="0.95"
+						   color="#FFFFFF"
+						   symbolColor="#FFFFFF"
+						   width="80%"
+						   xmlns:components="com.edt.mobile.components.*"
+						   updateComplete="onUpdateComplete(event)">
+	<s:layout>
+		<s:VerticalLayout gap="5"
+						  paddingBottom="30"
+						  paddingLeft="30"
+						  paddingRight="30"
+						  paddingTop="30"
+						  horizontalAlign="center"
+						  verticalAlign="middle"/>
+	</s:layout>
+
+	<s:Label text="{message}"
+			 width="100%"
+			 textAlign="center"/>
+
+	<s:HGroup width="100%"
+			  horizontalAlign="center">
+		<components:XButton label="OK"
+							primaryColor="0xE3A21A"
+							width="50%"
+							click="onClick(true)"/>
+	</s:HGroup>
+
+
+	<fx:Script>
+		<![CDATA[
+			import com.evola.driving.util.ThemeColors;
+
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+			import mx.managers.PopUpManager;
+			import mx.rpc.events.FaultEvent;
+
+			private static var _instance:XAlertPopup;
+
+			private var _message:String;
+
+			public static function show(event:FaultEvent):void
+			{
+
+				if (!_instance)
+				{
+
+					_instance=new XAlertPopup();
+				}
+
+				//ako je internet problem onda ispisujemo jednu gresku a ako nije onda drugu
+
+				var m:String="Neuspešno povezivanje sa serverom. Proveri svoju internet konekciju pa pokušaj ponovo.";
+
+				if (event.fault != null && event.fault.errorID != 2032)
+					m="Greška u komunikaciji sa serverom. Pokušaj ponovo.";
+
+
+				_instance.message=m;
+				_instance.open(FlexGlobals.topLevelApplication as DisplayObjectContainer, true);
+			}
+
+			public static function hide():void
+			{
+
+				if (_instance)
+					_instance.close();
+			}
+
+			[Bindable]
+			public function get message():String
+			{
+				return _message;
+			}
+
+			public function set message(value:String):void
+			{
+				_message=value;
+			}
+
+			protected function onUpdateComplete(event:FlexEvent):void
+			{
+
+				width=owner.width * 0.8;
+			}
+
+			override public function updatePopUpPosition():void
+			{
+
+				PopUpManager.centerPopUp(this);
+			}
+
+			private function onClick(commit:Boolean):void
+			{
+				super.close(commit);
+			}
+
+			public static function isShown():Boolean
+			{
+
+				return _instance && _instance.isOpen;
+			}
+
+			public static function close():void
+			{
+
+				if (_instance && _instance.isOpen)
+					_instance.close();
+			}
+		]]>
+	</fx:Script>
+
+</s:SkinnablePopUpContainer>

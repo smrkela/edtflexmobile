@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   width="100%"
+				   backgroundColor="{ThemeColors.BLUE}"
+				   backgroundAlpha="0.6"
+				   borderVisible="false"
+				   xmlns:components="com.edt.mobile.components.*">
+
+	<s:Label text="{title.toUpperCase()}"
+			 color="#FFFFFF"
+			 verticalCenter="0"
+			 left="3"/>
+
+	<components:XLine color="#FFFFFF"
+					  width="100%"
+					  bottom="0"/>
+
+	<fx:Script>
+		<![CDATA[
+			import com.evola.driving.util.ThemeColors;
+			[Bindable]
+			public var title:String;
+		]]>
+	</fx:Script>
+
+</s:BorderContainer>

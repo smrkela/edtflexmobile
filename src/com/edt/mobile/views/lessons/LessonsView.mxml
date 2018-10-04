@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<components:XView xmlns:fx="http://ns.adobe.com/mxml/2009"
+				  xmlns:s="library://ns.adobe.com/flex/spark"
+				  title="{getTitle(presenter.model.isLearning)}"
+				  init="presenter.viewShown()"
+				  destructionPolicy="never"
+				  xmlns:lessons="com.edt.mobile.views.lessons.*"
+				  xmlns:components="com.edt.mobile.components.*"
+				  pageUrl="{presenter.model.isLearning ? 'lessons/learning' : 'lessons/testing'}">
+
+	<components:layout>
+		<s:VerticalLayout gap="0"
+						  paddingTop="5"
+						  paddingBottom="5"
+						  horizontalAlign="center"/>
+	</components:layout>
+
+	<s:HGroup width="100%"
+			  verticalAlign="middle"
+			  paddingLeft="5"
+			  paddingRight="5">
+
+		<s:Group>
+
+			<s:Rect width="100%"
+					height="100%">
+				<s:fill>
+					<s:SolidColor color="{GroupColors.getColor(int(presenter.model.groupId))}"/>
+				</s:fill>
+			</s:Rect>
+
+			<s:Image source="{ThemeImages.getCategoryImage(presenter.model.groupId)}"
+					 smooth="true"
+					 left="5"
+					 right="5"
+					 top="3"
+					 bottom="3"/>
+
+		</s:Group>
+
+		<s:Label text="{presenter.model.groupName}"
+				 fontSize="22"
+				 paddingTop="5"
+				 paddingBottom="5"
+				 width="100%"/>
+
+	</s:HGroup>
+
+	<s:HGroup width="100%"
+			  paddingBottom="3"
+			  paddingLeft="3"
+			  paddingRight="3"
+			  paddingTop="5">
+		<s:Label text="Odaberi lekciju i kreni sa {presenter.model.isLearning ? 'učenjem' : 'proverom'}."
+				 width="100%"
+				 styleName="infoLabel"/>
+	</s:HGroup>
+
+	<s:Spacer height="5"/>
+
+	<s:BusyIndicator visible="{!presenter.model.lessons || presenter.model.lessons.length == 0}"
+					 includeInLayout="{!presenter.model.lessons || presenter.model.lessons.length == 0}"/>
+
+	<s:Scroller width="100%"
+				height="100%">
+
+		<s:DataGroup width="100%"
+					 dataProvider="{presenter.model.lessons}"
+					 itemRenderer="com.edt.mobile.views.lessons.controls.LessonItemRenderer">
+
+			<s:layout>
+				<s:VerticalLayout gap="4"
+								  paddingLeft="5"
+								  paddingRight="5"/>
+			</s:layout>
+
+		</s:DataGroup>
+
+	</s:Scroller>
+
+	<fx:Declarations>
+
+		<lessons:LessonsPresenter id="presenter"
+								  view="{this}"/>
+
+	</fx:Declarations>
+
+
+	<fx:Script>
+		<![CDATA[
+			import com.evola.driving.util.GroupColors;
+			import com.evola.driving.util.ThemeImages;
+
+			private function getTitle(isLearning:Boolean):Object
+			{
+
+				if (isLearning)
+					return "Učenje";
+
+				return "Provera";
+			}
+		]]>
+	</fx:Script>
+
+</components:XView>

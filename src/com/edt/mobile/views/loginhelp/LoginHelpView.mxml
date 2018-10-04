@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<components:XView xmlns:fx="http://ns.adobe.com/mxml/2009"
+				  xmlns:s="library://ns.adobe.com/flex/spark"
+				  title="Uputstvo"
+				  xmlns:components="com.edt.mobile.components.*"
+				  pageUrl="loginhelp">
+
+	<components:actionContent>
+	</components:actionContent>
+	
+	<components:layout>
+		<s:VerticalLayout paddingLeft="4"
+						  paddingRight="4"/>
+	</components:layout>
+
+	<s:Scroller width="100%"
+				height="100%">
+
+		<s:VGroup width="100%"
+				  horizontalAlign="center"
+				  paddingTop="10"
+				  paddingBottom="10"
+				  gap="15"
+				  color="#555555">
+
+			<s:Image>
+				<s:source>
+					<s:MultiDPIBitmapSource source160dpi="@Embed(source='assets/images/low-res/logo.png')"
+											source240dpi="@Embed(source='assets/images/mid-res/logo.png')"
+											source320dpi="@Embed(source='assets/images/high-res/logo.png')"/>
+				</s:source>
+			</s:Image>
+
+			<s:Label text="Da biste se prijavili odnosno ulogovali, treba da budete registrovani. Registracija je besplatna."
+					 width="100%"/>
+
+			<s:Label text="Možete se registrovati preko mobilne aplikacije ili preko sajta www.vozacisrbije.com. Bez obzira kako se registrujete, i sajtu i mobilnoj aplikaciji možete pristupiti preko istih podataka (istog korisničkog imena i šifre)."
+					 width="100%"/>
+
+			<s:Label text="Ukoliko ste se registrovali preko društvenih mreža (npr. Facebook), korisničko ime i lozinka poslati su vam na email adresu prilikom registracije."
+					 width="100%"/>
+
+			<s:Label text="Idi na sajt Vozači Srbije"
+					 textDecoration="underline"
+					 color="{ThemeColors.BLUE}"
+					 click="onGoToWebsite(event)"/>
+
+			<components:XButton label="Vrati se na prijavu"
+								primaryColor="{ThemeColors.ORANGE}"
+								click="navigator.backKeyUpHandler()"/>
+
+		</s:VGroup>
+
+	</s:Scroller>
+
+	<fx:Script>
+		<![CDATA[
+			import com.edt.mobile.utils.Settings;
+			import com.evola.driving.util.ThemeColors;
+
+			import flash.net.navigateToURL;
+
+			protected function onGoToWebsite(event:MouseEvent):void
+			{
+
+				navigateToURL(new URLRequest(Settings.SITE));
+
+			}
+		]]>
+	</fx:Script>
+
+</components:XView>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<components:XView xmlns:fx="http://ns.adobe.com/mxml/2009"
+				  xmlns:s="library://ns.adobe.com/flex/spark"
+				  xmlns:groups="com.edt.mobile.views.groups.*"
+				  xmlns:controls="com.edt.mobile.views.groups.controls.*"
+				  xmlns:components="com.edt.mobile.components.*"
+				  destructionPolicy="never"
+				  init="presenter.viewShown()"
+				  pageUrl="{presenter.model.isLearning ? 'groups/learning' : 'groups/testing'}"
+				  title="Kategorije pitanja">
+
+	<components:layout>
+		<s:VerticalLayout gap="0"
+						  horizontalAlign="center"/>
+	</components:layout>
+
+	<s:HGroup width="100%"
+			  paddingBottom="3"
+			  paddingLeft="3"
+			  paddingRight="3"
+			  paddingTop="3">
+		<s:Label visible="{presenter.model.groups.length &gt; 0}"
+				 styleName="infoLabel"
+				 text="Izaberi kategoriju pitanja i kreni sa {presenter.model.isLearning ? 'učenjem' : 'proverom'}."/>
+	</s:HGroup>
+
+	<s:BusyIndicator visible="{!presenter.model.groups || presenter.model.groups.length == 0}"
+					 includeInLayout="{!presenter.model.groups || presenter.model.groups.length == 0}"/>
+
+	<s:Scroller width="100%"
+				height="100%">
+
+		<s:DataGroup width="100%"
+					 height="100%"
+					 dataProvider="{presenter.model.groups}">
+
+			<s:layout>
+				<s:VerticalLayout gap="4"
+								  paddingLeft="5"
+								  paddingRight="5"/>
+			</s:layout>
+
+			<s:itemRenderer>
+				<fx:Component>
+					<controls:GroupItemRenderer click="outerDocument.presenter.itemClicked(event)"/>
+				</fx:Component>
+			</s:itemRenderer>
+
+		</s:DataGroup>
+
+	</s:Scroller>
+
+	<fx:Declarations>
+
+		<groups:GroupsPresenter id="presenter"
+								view="{this}"/>
+
+	</fx:Declarations>
+
+</components:XView>

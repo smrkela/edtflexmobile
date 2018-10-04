@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   borderVisible="false"
+				   backgroundColor="{getBackgroundColor(message)}">
+
+	<s:Label text="{getCategoryText(message)}"
+			 color="#FFFFFF"
+			 verticalCenter="0"
+			 horizontalCenter="0"
+			 textAlign="center"/>
+
+	<fx:Script>
+		<![CDATA[
+			import com.evola.driving.Session;
+			import com.evola.driving.util.GroupColors;
+
+			[Bindable]
+			public var message:XML;
+
+			private function getBackgroundColor(message:XML):uint
+			{
+
+				var categoryIdString:String=message.attribute('category-id');
+
+				var categoryId:int=int(Session.model.getQuestionCategory(categoryIdString).id);
+
+				return GroupColors.getColor(categoryId);
+			}
+
+			private function getCategoryText(message:XML):String
+			{
+
+				var categoryId:String=message.attribute('category-id');
+
+				var categoryName:String=Session.model.getQuestionCategory(categoryId).name;
+
+				return categoryName.substr(0, 2).toUpperCase();
+			}
+		]]>
+	</fx:Script>
+
+</s:BorderContainer>

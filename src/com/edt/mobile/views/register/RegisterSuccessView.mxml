@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<components:XView xmlns:fx="http://ns.adobe.com/mxml/2009"
+				  xmlns:s="library://ns.adobe.com/flex/spark"
+				  title="Uspešna registracija"
+				  xmlns:components="com.edt.mobile.components.*"
+				  pageUrl="registerSuccess"
+				  backKeyPressed="onBackKeyPressed(event)">
+
+	<components:actionContent>
+	</components:actionContent>
+	
+	<components:layout>
+		<s:VerticalLayout paddingLeft="4"
+						  paddingRight="4"/>
+	</components:layout>
+
+	<s:Scroller width="100%"
+				height="100%">
+
+		<s:VGroup width="100%"
+				  horizontalAlign="center"
+				  paddingTop="10"
+				  paddingBottom="10"
+				  gap="10"
+				  color="#555555">
+
+			<s:Label text="Proveri svoj mail!"
+					 fontWeight="bold"/>
+
+			<s:Spacer height="10"/>
+
+			<s:Label text="Na unetu e-mail adresu ({data.email}) poslat je link za verifikaciju. Otvori mail i klikni na njega da bi se aktivirao tvoj nalog. Nakon toga možeš da se uloguješ."
+					 width="100%"/>
+
+			<s:Spacer height="10"/>
+
+			<s:Label text="NAPOMENA: Ukoliko poslati email nije stigao u inbox, proveri svoj 'spam' folder odnosno proveri da li je mail stigao među neželjenu poštu."
+					 fontStyle="italic"
+					 width="100%"/>
+			
+			<s:Spacer height="10"/>
+
+			<components:XButton label="Vrati se na prijavu"
+								primaryColor="{ThemeColors.ORANGE}"
+								click="goBack()"/>
+
+		</s:VGroup>
+
+	</s:Scroller>
+
+	<fx:Script>
+		<![CDATA[
+			import com.evola.driving.util.ThemeColors;
+
+			import mx.events.FlexEvent;
+
+			protected function onBackKeyPressed(event:FlexEvent):void
+			{
+
+				navigator.popView();
+			}
+
+			private function goBack():void
+			{
+
+				navigator.popView();
+				navigator.popView();
+			}
+		]]>
+	</fx:Script>
+
+</components:XView>

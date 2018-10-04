@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Rect xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		left="0"
+		right="0"
+		top="0"
+		bottom="0"
+		radiusX="3"
+		radiusY="3"
+		xmlns:components="com.edt.mobile.components.*">
+
+	<s:fill>
+		<components:XButtonGradient primaryColor="{primaryColor}"
+									secondaryColor="{secondaryColor}"
+									primaryAlpha="{primaryAlpha}"
+									secondaryAlpha="{secondaryAlpha}"
+									isTouched="{isTouched}"/>
+	</s:fill>
+
+	<fx:Script>
+		<![CDATA[
+			import com.evola.driving.util.ThemeColors;
+
+			[Bindable]
+			public var isTouched:Boolean=false;
+
+			[Bindable]
+			public var primaryColor:uint=ThemeColors.BLUE;
+
+			[Bindable]
+			public var secondaryColor:uint=ThemeColors.BLUE;
+
+			[Bindable]
+			public var primaryAlpha:Number=1;
+
+			[Bindable]
+			public var secondaryAlpha:Number=0.8;
+		]]>
+	</fx:Script>
+
+</s:Rect>

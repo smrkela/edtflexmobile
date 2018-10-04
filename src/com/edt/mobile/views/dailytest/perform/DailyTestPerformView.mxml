@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<components:XView xmlns:fx="http://ns.adobe.com/mxml/2009"
+				  xmlns:s="library://ns.adobe.com/flex/spark"
+				  title="{getTitle(presenter.model.currentIndex, presenter.model.questions)}"
+				  init="presenter.viewShown()"
+				  destructionPolicy="never"
+				  xmlns:lessons="com.edt.mobile.views.lessons.*"
+				  xmlns:components="com.edt.mobile.components.*"
+				  pageUrl="dailyTestPerform"
+				  xmlns:overview="com.edt.mobile.views.dailytest.overview.*"
+				  xmlns:list="com.edt.mobile.views.dailytest.list.*"
+				  xmlns:toplist="com.edt.mobile.views.dailytest.toplist.*"
+				  xmlns:perform="com.edt.mobile.views.dailytest.perform.*"
+				  xmlns:components1="com.edt.mobile.views.learning.components.*">
+
+	<components:actionContent>
+	</components:actionContent>
+	
+	<components:layout>
+
+		<s:VerticalLayout gap="4"
+						  paddingBottom="4"
+						  paddingLeft="4"
+						  paddingRight="4"
+						  paddingTop="4"
+						  horizontalAlign="center"/>
+
+	</components:layout>
+
+	<s:BusyIndicator visible="{presenter.model.isLoading}"
+					 includeInLayout="{presenter.model.isLoading}"/>
+
+	<s:Scroller width="100%"
+				height="100%">
+
+		<components1:QuestionControl id="questionControl"
+									 question="{presenter.model.currentQuestion}"
+									 visible="{presenter.model.currentQuestion != null}"/>
+
+	</s:Scroller>
+
+	<s:HGroup width="100%"
+			  visible="{!presenter.model.isLoading}"
+			  includeInLayout="{!presenter.model.isLoading}">
+
+		<components:XButton label="Prethodno"
+							primaryColor="0xFFC40D"
+							width="100%"
+							height="100%"
+							visible="{presenter.model.currentIndex != 0}"
+							click="presenter.previousQuestionClicked()"/>
+		<components:XButton label="Sledeće"
+							primaryColor="0x00A300"
+							icon="@Embed(source='assets/images/icons/next.png')"
+							width="100%"
+							visible="{presenter.model.currentIndex != presenter.model.questions.length - 1}"
+							includeInLayout="{presenter.model.currentIndex != presenter.model.questions.length - 1}"
+							click="presenter.nextQuestionClicked()"/>
+
+		<components:XButton label="Završi test"
+							primaryColor="0x00A300"
+							icon="@Embed(source='assets/images/icons/flag.png')"
+							width="100%"
+							visible="{presenter.model.currentIndex == presenter.model.questions.length - 1}"
+							includeInLayout="{presenter.model.currentIndex == presenter.model.questions.length - 1}"
+							click="presenter.finishClicked()"/>
+
+	</s:HGroup>
+
+	<fx:Declarations>
+
+		<perform:DailyTestPerformPresenter id="presenter"
+										   view="{this}"/>
+
+	</fx:Declarations>
+
+	<fx:Script>
+		<![CDATA[
+			import com.evola.driving.util.DateUtils;
+
+			import mx.collections.ListCollectionView;
+
+			private function getTitle(currentIndex:int, questions:ListCollectionView):Object
+			{
+
+				var lessonName:String="";
+
+				if (presenter.model.isToday)
+					lessonName="Današnji test dana";
+				else
+					lessonName="Test dana " + DateUtils.formatDateSimple(presenter.model.date);
+
+				var text:String=lessonName;
+
+				text+="    " + (currentIndex + 1) + "/" + presenter.model.questions.length;
+
+				return text;
+			}
+		]]>
+	</fx:Script>
+
+</components:XView>

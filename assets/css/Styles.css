@@ -1,0 +1,35 @@
+/* CSS file */
+@namespace s "library://ns.adobe.com/flex/spark";
+
+s|ViewNavigatorApplication{
+
+	fontFamily: "Segoe UI";
+	
+	fontSize: 14;
+}
+
+s|View{
+	
+	
+}
+
+s|ActionBar{
+	
+	chromeColor: #2773AE;
+	defaultButtonAppearance: beveled;
+}
+
+.infoLabel{
+	
+	color: #888888;
+}
+
+.topList{
+	
+	alternatingItemColors: #E5E5E5, #FFFFFF;
+}
+
+s|Image{
+	
+	enableLoadingState: true;
+}

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				width="100%"
+				autoDrawBackground="false"
+				xmlns:components="com.edt.mobile.components.*">
+
+	<s:layout>
+		<s:HorizontalLayout verticalAlign="middle"
+							paddingLeft="4"
+							paddingRight="4"
+							paddingBottom="2"
+							paddingTop="2"/>
+	</s:layout>
+
+	<s:Label text="{DateUtils.getPrettyDayOfWeek(_date)}"
+			 color="{_color}"
+			 width="120"/>
+
+	<components:XImage source="@Embed(source='assets/images/icons/user_gray.png')"
+					   smooth="true"
+					   height="15"
+					   scaleMode="letterbox"/>
+
+	<s:Label text="{_users}"
+			 color="{ThemeColors.GRAY}"
+			 width="100%"/>
+
+	<components:XButton label="{_points} poena"
+						visible="{_isTaken}"
+						primaryColor="{ThemeColors.GREEN}"
+						includeInLayout="{_isTaken}"
+						paddingBottom="4"
+						paddingTop="4"
+						width="100"
+						click="presenter.viewTestResults(data.attribute('test-id'))"/>
+
+	<components:XButton label="Polaži"
+						visible="{!_isTaken}"
+						includeInLayout="{!_isTaken}"
+						paddingBottom="4"
+						paddingTop="4"
+						width="100"
+						primaryColor="{ThemeColors.ORANGE}"
+						click="presenter.performTest(data.attribute('test-id'))"/>
+
+	<fx:Script>
+		<![CDATA[
+			import com.edt.mobile.views.dailytest.list.DailyTestListPresenter;
+			import com.evola.driving.util.DateUtils;
+			import com.evola.driving.util.FormattingUtils;
+			import com.evola.driving.util.ThemeColors;
+
+			[Bindable]
+			public var presenter:DailyTestListPresenter;
+
+			[Bindable]
+			private var _dateString:String;
+
+			[Bindable]
+			private var _date:Date;
+
+			[Bindable]
+			private var _points:Number;
+
+			[Bindable]
+			private var _users:Number;
+
+			[Bindable]
+			private var _isTaken:Boolean;
+
+			[Bindable]
+			private var _color:uint;
+
+			override public function set data(value:Object):void
+			{
+
+				if (value && value != data)
+				{
+
+					_dateString=value.attribute('date-string');
+					_date=FormattingUtils.parseJavaDateString(value.attribute('date'));
+					_points=value.attribute('number-of-points');
+					_users=value.attribute('number-of-users');
+					_isTaken=value.attribute('has-user-taken-test') == "true";
+
+					if (_date.day == 0)
+						_color=ThemeColors.RED;
+					else if (_date.day == 6)
+						_color=ThemeColors.BLUE;
+					else
+						_color=0x000000;
+				}
+
+				super.data=value;
+			}
+		]]>
+	</fx:Script>
+
+</s:ItemRenderer>

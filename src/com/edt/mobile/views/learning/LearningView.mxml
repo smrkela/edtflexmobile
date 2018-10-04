@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<components1:XView xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   title="{getTitle(presenter.model.isLearning, presenter.model.lessonName, presenter.model.currentIndex, presenter.model.questions)}"
+				   xmlns:home="com.edt.mobile.views.home.*"
+				   init="presenter.viewShown()"
+				   destructionPolicy="never"
+				   xmlns:learning="com.edt.mobile.views.learning.*"
+				   xmlns:components="com.edt.mobile.views.learning.components.*"
+				   xmlns:components1="com.edt.mobile.components.*"
+				   pageUrl="{presenter.model.isLearning ? 'learning/learning' : 'learning/testing'}">
+	
+	<components1:actionContent>
+	</components1:actionContent>
+
+	<components1:layout>
+
+		<s:VerticalLayout gap="4"
+						  paddingBottom="4"
+						  paddingLeft="4"
+						  paddingRight="4"
+						  paddingTop="4"
+						  horizontalAlign="center"/>
+
+	</components1:layout>
+
+	<s:BusyIndicator visible="{!presenter.model.currentQuestion}"
+					 includeInLayout="{!presenter.model.currentQuestion}"/>
+
+	<s:Scroller width="100%"
+				height="100%">
+
+		<components:QuestionControl id="questionControl"
+									question="{presenter.model.currentQuestion}"
+									visible="{presenter.model.currentQuestion != null}"
+									gestureSwipe="presenter.questionsSwiped(event)"/>
+
+	</s:Scroller>
+
+	<s:HGroup width="100%"
+			  visible="{!Session.model.isTestingMode &amp;&amp; presenter.model.currentQuestion != null}"
+			  includeInLayout="{!Session.model.isTestingMode}">
+
+		<components1:XButton label="Prethodno"
+							 primaryColor="0xFFC40D"
+							 width="100%"
+							 height="100%"
+							 visible="{presenter.model.currentIndex != 0}"
+							 click="presenter.previousQuestionClicked()"/>
+		<components1:XButton label="Sledeće"
+							 primaryColor="0x00A300"
+							 icon="@Embed(source='assets/images/icons/next.png')"
+							 width="100%"
+							 visible="{presenter.model.currentIndex != presenter.model.questions.length - 1}"
+							 includeInLayout="{presenter.model.currentIndex != presenter.model.questions.length - 1}"
+							 click="presenter.nextQuestionClicked()"/>
+
+		<components1:XButton label="Završi učenje"
+							 primaryColor="0x00A300"
+							 icon="@Embed(source='assets/images/icons/flag.png')"
+							 width="100%"
+							 visible="{presenter.model.currentIndex == presenter.model.questions.length - 1}"
+							 includeInLayout="{presenter.model.currentIndex == presenter.model.questions.length - 1}"
+							 click="presenter.finishLearningClicked()"/>
+
+	</s:HGroup>
+
+	<s:HGroup width="100%"
+			  visible="{Session.model.isTestingMode &amp;&amp; presenter.model.currentQuestion != null}"
+			  includeInLayout="{Session.model.isTestingMode}">
+
+		<components1:XButton label="Preskoči pitanje"
+							 primaryColor="0xFFC40D"
+							 width="100%"
+							 height="100%"
+							 visible="{Session.model.isUnconfirmed &amp;&amp; Session.model.isTestingMode}"
+							 click="presenter.skipQuestionClicked()"/>
+
+		<components1:XButton label="Potvrdi odgovor"
+							 primaryColor="0x00A300"
+							 width="100%"
+							 icon="@Embed(source='assets/images/icons/next.png')"
+							 visible="{Session.model.isUnconfirmed}"
+							 includeInLayout="{Session.model.isUnconfirmed}"
+							 enabled="{presenter.model.currentQuestion.isAnswered}"
+							 click="presenter.confirmQuestionClicked()"/>
+
+		<components1:XButton label="Sledeće pitanje"
+							 primaryColor="0x00A300"
+							 width="100%"
+							 icon="@Embed(source='assets/images/icons/next.png')"
+							 visible="{!Session.model.isUnconfirmed &amp;&amp; presenter.model.currentIndex != presenter.model.questions.length - 1}"
+							 includeInLayout="{!Session.model.isUnconfirmed &amp;&amp; presenter.model.currentIndex != presenter.model.questions.length - 1}"
+							 click="presenter.nextQuestionClicked()"/>
+
+		<components1:XButton label="Završi proveru"
+							 primaryColor="0x00A300"
+							 width="100%"
+							 icon="@Embed(source='assets/images/icons/flag.png')"
+							 visible="{!Session.model.isUnconfirmed &amp;&amp;  presenter.model.currentIndex == presenter.model.questions.length - 1}"
+							 includeInLayout="{!Session.model.isUnconfirmed &amp;&amp; presenter.model.currentIndex == presenter.model.questions.length - 1}"
+							 click="presenter.finishClicked()"/>
+
+	</s:HGroup>
+
+	<fx:Declarations>
+		<learning:LearningPresenter id="presenter"
+									view="{this}"/>
+	</fx:Declarations>
+
+	<fx:Script>
+		<![CDATA[
+			import com.evola.driving.Session;
+
+			import mx.collections.ArrayCollection;
+
+			private function getTitle(isLearning:Boolean, lessonName:String, currentIndex:int, questions:ArrayCollection):Object
+			{
+
+				var lessonName:String=presenter.model.lessonName ? presenter.model.lessonName : "...";
+
+				var text:String="";
+
+				if (isLearning)
+					text="Učenje - " + lessonName;
+				else
+					text="Provera - " + lessonName;
+
+				text+="    " + (currentIndex + 1) + "/" + presenter.model.questions.length;
+
+				return text;
+			}
+		]]>
+	</fx:Script>
+
+</components1:XView>

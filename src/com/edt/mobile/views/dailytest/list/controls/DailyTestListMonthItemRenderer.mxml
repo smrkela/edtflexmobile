@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				width="100%"
+				autoDrawBackground="false"
+				xmlns:components="com.edt.mobile.components.*"
+				xmlns:controls="com.edt.mobile.views.dailytest.list.controls.*"
+				currentState="{_isExpanded ? 'expanded' : 'default'}">
+
+	<s:states>
+		<s:State name="default"/>
+		<s:State name="expanded"/>
+	</s:states>
+
+	<s:layout>
+		<s:VerticalLayout gap="0"/>
+	</s:layout>
+
+	<s:BorderContainer width="100%"
+					   borderVisible="false"
+					   backgroundColor="{ThemeColors.GRAY}"
+					   color="#FFFFFF"
+					   fontWeight="bold"
+					   fontSize="20"
+					   click="onHeaderClick(event)">
+
+		<s:layout>
+			<s:HorizontalLayout verticalAlign="middle"
+								paddingBottom="5"
+								paddingTop="5"
+								paddingLeft="3"
+								paddingRight="3"/>
+		</s:layout>
+
+		<s:Label text="{data.@year} {DateUtils.getMonthName(data.@month - 1)}"
+				 width="100%"/>
+
+		<s:Label text="{data.attribute('tests-taken')}/{data.attribute('total-tests')}"/>
+
+		<components:EImage source="@Embed(source='assets/images/icons/expand_white.png')"
+						   source.expanded="@Embed(source='assets/images/icons/collapse_white.png')"/>
+
+	</s:BorderContainer>
+
+
+	<s:DataGroup dataProvider="{new XMLListCollection(data.child('test'))}"
+				 includeIn="expanded"
+				 width="100%">
+
+		<s:layout>
+			<s:VerticalLayout gap="0"
+							  paddingLeft="10"/>
+		</s:layout>
+
+		<s:itemRenderer>
+			<fx:Component>
+				<controls:DailyTestListTestItemRenderer presenter="{outerDocument.presenter}"/>
+			</fx:Component>
+		</s:itemRenderer>
+
+	</s:DataGroup>
+
+	<fx:Script>
+		<![CDATA[
+			import com.edt.mobile.views.dailytest.list.DailyTestListPresenter;
+			import com.evola.driving.util.DateUtils;
+			import com.evola.driving.util.ThemeColors;
+
+			import mx.collections.XMLListCollection;
+
+			[Bindable]
+			public var presenter:DailyTestListPresenter;
+
+			[Bindable]
+			private var _isExpanded:Boolean;
+
+			override public function set data(value:Object):void
+			{
+
+				super.data=value;
+
+				_isExpanded=value.attribute("is-expanded") == "true";
+			}
+
+			protected function onHeaderClick(event:MouseEvent):void
+			{
+
+				data.attribute("is-expanded")[0]=!_isExpanded;
+			}
+		]]>
+	</fx:Script>
+
+</s:ItemRenderer>
